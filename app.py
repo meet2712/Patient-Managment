@@ -8,12 +8,12 @@ from sqlalchemy.orm import sessionmaker
 
 app = FastAPI()
 
-SQLALCHEMY_DATABASE_URL = 'mysql+mysqlconnector://root:''@localhost:3306/hms'
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-)
+# SQLALCHEMY_DATABASE_URL = 'mysql+mysqlconnector://root:''@localhost:3306/hms'
+# engine = create_engine(
+#     SQLALCHEMY_DATABASE_URL,
+# )
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 doctor_list = [
     {
