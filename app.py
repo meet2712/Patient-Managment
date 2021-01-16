@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 import uvicorn
 from pydantic import BaseModel
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+#from sqlalchemy import create_engine
+#from sqlalchemy.ext.declarative import declarative_base
+#from sqlalchemy.orm import sessionmaker
 
 
 app = FastAPI()
@@ -57,4 +57,4 @@ def delete_doctor_via_id(doc_id: int):
     return {}
 
 
-uvicorn.run(app)
+#uvicorn.run(app, host='0.0.0.0')
