@@ -53,4 +53,4 @@ def delete_doctor_via_id(doc_id: int):
     return {}
 
 
-uvicorn.run(app)
+#uvicorn.run(app)
