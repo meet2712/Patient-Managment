@@ -1,7 +1,7 @@
+import uvicorn
 from fastapi import FastAPI
 import mysql.connector
 from fastapi import FastAPI
-from mysql import connector
 from pydantic import BaseModel
 
 mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
