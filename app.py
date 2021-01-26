@@ -1,21 +1,37 @@
-import uvicorn
 from fastapi import FastAPI
+import mysql.connector
+from fastapi import FastAPI
+from mysql import connector
 from pydantic import BaseModel
+
+mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+
+print(mydb)
+
+if (mydb):
+    print("Connection Successfull")
+
+else:
+    print("Connection Unsuccessful")
+
+mycursor = mydb.cursor()
+mycursor.execute("use heroku_cb8e53992ffbeaf")
+mycursor.execute("select * from doctor")
+
+for db in mycursor:
+    print(db)
+
+# DATABASE_URL = 'mysql://b4b07506295099:90df5ad7@us-cdbr-east-03.cleardb.com/heroku_cb8e53992ffbeaf?reconnect=true'
+# database = databases.Database(DATABASE_URL)
+
 
 app = FastAPI()
 
-# SQLALCHEMY_DATABASE_URL = 'mysql+mysqlconnector://root:''@localhost:3306/hms'
-# engine = create_engine(
-#     SQLALCHEMY_DATABASE_URL,
-# )
-
-# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 doctor_list = [
     {
-    "doc_id": 0,
-    "doc_name": "Meet",
-    "type": "Dentist"
+        "doc_id": 0,
+        "doc_name": "Meet",
+        "type": "Dentist"
     },
     {
         "doc_id": 1,
