@@ -1,5 +1,4 @@
 import uvicorn
-from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import mysql.connector
 from fastapi import FastAPI, Request
@@ -29,7 +28,7 @@ for db in mycursor:
 # database = databases.Database(DATABASE_URL)
 
 
-app = FastAPI()
+app = FastAPI(template_folder='template')
 
 doctor_list = [
     {
@@ -51,7 +50,7 @@ class Doctor(BaseModel):
     doc_type: str
 
 
-@app.get('/', response_class=HTMLResponse)
+@app.get('/home', response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
