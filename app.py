@@ -1,14 +1,18 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 import mysql.connector
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
+from fastapi.templating import Jinja2Templates
 
 mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
+templates = Jinja2Templates(directory="templates/")
+
 print(mydb)
 
-if (mydb):
+if mydb:
     print("Connection Successfull")
 
 else:
@@ -45,6 +49,11 @@ class Doctor(BaseModel):
     doc_id: int
     doc_name: str
     doc_type: str
+
+
+@app.get('/', response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.get('/doctor')
