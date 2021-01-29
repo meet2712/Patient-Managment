@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 
 mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
-templates = Jinja2Templates(directory="templates/")
+templates = Jinja2Templates(directory="Templates/")
 
 print(mydb)
 
@@ -28,7 +28,7 @@ for db in mycursor:
 # database = databases.Database(DATABASE_URL)
 
 
-app = FastAPI(template_folder='template')
+app = FastAPI(template_folder='Template')
 
 doctor_list = [
     {
