@@ -28,7 +28,7 @@ for db in mycursor:
 # database = databases.Database(DATABASE_URL)
 
 
-app = FastAPI(template_folder='Template')
+app = FastAPI(template_folder='Templates/')
 
 doctor_list = [
     {
