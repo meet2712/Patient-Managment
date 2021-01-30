@@ -50,7 +50,7 @@ class Doctor(BaseModel):
     doc_type: str
 
 
-@app.get('/home', response_class=HTMLResponse)
+@app.get('/', response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
