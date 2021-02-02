@@ -12,7 +12,7 @@ templates = Jinja2Templates(directory="Templates/")
 print(mydb)
 
 if mydb:
-    print("Connection Successfull")
+    print("Connection Successful")
 
 else:
     print("Connection Unsuccessful")
@@ -40,6 +40,16 @@ doctor_list = [
         "doc_id": 1,
         "doc_name": "Hiren",
         "doc_type": "Cardiac"
+    },
+    {
+        "doc_id": 2,
+        "doc_name": "Dixit",
+        "type": "Surgeon"
+    },
+    {
+        "doc_id": 4,
+        "doc_name": "Keval",
+        "doc_type": "Physician"
     }
 ]
 
@@ -50,7 +60,7 @@ class Doctor(BaseModel):
     doc_type: str
 
 
-@app.get('/home', response_class=HTMLResponse)
+@app.get('/', response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
@@ -77,4 +87,4 @@ def delete_doctor_via_id(doc_id: int):
     return {}
 
 
-#uvicorn.run(app)
+uvicorn.run(app)
