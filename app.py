@@ -4,10 +4,10 @@ import mysql.connector
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+
 
 mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-
-templates = Jinja2Templates(directory="Templates/")
 
 print(mydb)
 
@@ -29,6 +29,11 @@ for db in mycursor:
 
 
 app = FastAPI(template_folder='Templates/')
+templates = Jinja2Templates(directory="Templates/")
+app.mount("/static", StaticFiles(directory="./static"), name="static")
+app.mount("/Templates", StaticFiles(directory="./Templates"), name="Templates")
+
+
 
 doctor_list = [
     {
@@ -65,6 +70,13 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+@app.get('/test', response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("test.html", {"request": request})
+
+
+
+
 @app.get('/doctor')
 def get_doc():
     return doctor_list
@@ -87,4 +99,4 @@ def delete_doctor_via_id(doc_id: int):
     return {}
 
 
-#uvicorn.run(app)
+uvicorn.run(app)
