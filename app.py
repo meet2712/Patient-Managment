@@ -77,11 +77,27 @@ async def home(request: Request):
 
 
 
+@app.get('/patient')
+def get_patient():
+    #return doctor_list
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from patient")
+    patient_list = []
+    for x in mycursor:
+        patient_list.append(x)
+    return patient_list
 
-@app.get('/doctor')
-def get_doc():
-    return doctor_list
-
+@app.get('/hospital')
+def get_hospital():
+    #return doctor_list
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from hospital")
+    hospital_list = []
+    for x in mycursor:
+        hospital_list.append(x)
+    return hospital_list
 
 @app.get('/doctor/{doctor_id}')
 def get_doctor_via_id(doc_id: int):
@@ -100,4 +116,4 @@ def delete_doctor_via_id(doc_id: int):
     return {}
 
 
-#uvicorn.run(app)
+uvicorn.run(app)
