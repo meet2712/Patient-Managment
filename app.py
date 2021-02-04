@@ -75,6 +75,9 @@ async def home(request: Request):
 async def home(request: Request):
     return templates.TemplateResponse("test.html", {"request": request})
 
+@app.get('/signup', response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("signup.html", {"request": request})
 
 
 
@@ -100,4 +103,4 @@ def delete_doctor_via_id(doc_id: int):
     return {}
 
 
-uvicorn.run(app)
+#uvicorn.run(app)
