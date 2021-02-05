@@ -82,6 +82,7 @@ async def home(request: Request):
 @app.get('/doctor')
 def get_doc():
     # return doctor_list
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor1 = mydb.cursor()
     mycursor1.execute("use heroku_cb8e53992ffbeaf")
     mycursor1.execute("select * from doctor")
@@ -95,6 +96,7 @@ def get_doc():
 @app.get('/patient')
 def get_doc():
     # return patient_list
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor2 = mydb.cursor()
     mycursor2.execute("use heroku_cb8e53992ffbeaf")
     mycursor2.execute("select * from patient")
@@ -108,6 +110,7 @@ def get_doc():
 @app.get('/hospital')
 def get_doc():
     # return hospital_list
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor3 = mydb.cursor()
     mycursor3.execute("use heroku_cb8e53992ffbeaf")
     mycursor3.execute("select * from hospital")
@@ -120,6 +123,7 @@ def get_doc():
 
 @app.get('/reports')
 def get_doc():
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor4 = mydb.cursor()
     mycursor4.execute("use heroku_cb8e53992ffbeaf")
     mycursor4.execute("select * from reports")
@@ -146,4 +150,5 @@ def delete_doctor_via_id(doc_id: int):
     doctor_list.pop(doc_id - 1)
     return {}
 
-#uvicorn.run(app)
+
+uvicorn.run(app)
