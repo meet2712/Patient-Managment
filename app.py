@@ -21,17 +21,15 @@ mycursor = mydb.cursor()
 mycursor.execute("use heroku_cb8e53992ffbeaf")
 mycursor.execute("select * from doctor")
 
-
 for db in mycursor:
     print(db)
-mydb.commit()
+
+# mydb.commit()
 
 app = FastAPI(template_folder='Templates/')
 templates = Jinja2Templates(directory="Templates/")
 app.mount("/static", StaticFiles(directory="./static"), name="static")
 app.mount("/Templates", StaticFiles(directory="./Templates"), name="Templates")
-
-
 
 doctor_list = [
     {
@@ -55,7 +53,7 @@ doctor_list = [
         "doc_type": "Physician"
     }
 ]
-# Test Message
+
 
 class Doctor(BaseModel):
     doc_id: int
@@ -84,11 +82,11 @@ async def home(request: Request):
 @app.get('/doctor')
 def get_doc():
     # return doctor_list
-    mycursor = mydb.cursor()
-    mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute("select * from doctor")
+    mycursor1 = mydb.cursor()
+    mycursor1.execute("use heroku_cb8e53992ffbeaf")
+    mycursor1.execute("select * from doctor")
     doctor_list = []
-    for x in mycursor:
+    for x in mycursor1:
         doctor_list.append(x)
     mydb.commit()
     return doctor_list
@@ -97,11 +95,11 @@ def get_doc():
 @app.get('/patient')
 def get_doc():
     # return patient_list
-    mycursor = mydb.cursor()
-    mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute("select * from patient")
+    mycursor2 = mydb.cursor()
+    mycursor2.execute("use heroku_cb8e53992ffbeaf")
+    mycursor2.execute("select * from patient")
     patient_list = []
-    for x in mycursor:
+    for x in mycursor2:
         patient_list.append(x)
     mydb.commit()
     return patient_list
@@ -110,11 +108,11 @@ def get_doc():
 @app.get('/hospital')
 def get_doc():
     # return hospital_list
-    mycursor = mydb.cursor()
-    mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute("select * from hospital")
+    mycursor3 = mydb.cursor()
+    mycursor3.execute("use heroku_cb8e53992ffbeaf")
+    mycursor3.execute("select * from hospital")
     hospital_list = []
-    for x in mycursor:
+    for x in mycursor3:
         hospital_list.append(x)
     mydb.commit()
     return hospital_list
@@ -122,11 +120,11 @@ def get_doc():
 
 @app.get('/reports')
 def get_doc():
-    mycursor = mydb.cursor()
-    mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute("select * from reports")
+    mycursor4 = mydb.cursor()
+    mycursor4.execute("use heroku_cb8e53992ffbeaf")
+    mycursor4.execute("select * from reports")
     reports_list = []
-    for x in mycursor:
+    for x in mycursor4:
         reports_list.append(x)
     mydb.commit()
     return reports_list
@@ -148,4 +146,4 @@ def delete_doctor_via_id(doc_id: int):
     doctor_list.pop(doc_id - 1)
     return {}
 
-# uvicorn.run(app)
+#uvicorn.run(app)
