@@ -143,5 +143,4 @@ def delete_doctor_via_id(doc_id: int):
     doctor_list.pop(doc_id-1)
     return {}
 
-
-uvicorn.run(app)
+# uvicorn.run(app)
