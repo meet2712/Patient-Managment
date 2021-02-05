@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from fastapi import FastAPI, Request
 
+
 mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
 print(mydb)
@@ -144,7 +145,7 @@ def add_doctor(doctor: Doctor):
 
 @app.delete('/doctor/{doctor_id}')
 def delete_doctor_via_id(doc_id: int):
-    doctor_list.pop(doc_id-1)
+    doctor_list.pop(doc_id - 1)
     return {}
 
 # uvicorn.run(app)
