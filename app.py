@@ -1,12 +1,8 @@
-import uvicorn
-from fastapi.responses import HTMLResponse
 import mysql.connector
-from fastapi import FastAPI, Request
-from pydantic import BaseModel
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-
-
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 
 mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
@@ -24,9 +20,6 @@ mycursor.execute("select * from doctor")
 
 for db in mycursor:
     print(db)
-
-# DATABASE_URL = 'mysql://b4b07506295099:90df5ad7@us-cdbr-east-03.cleardb.com/heroku_cb8e53992ffbeaf?reconnect=true'
-# database = databases.Database(DATABASE_URL)
 
 
 app = FastAPI(template_folder='Templates/')
@@ -86,12 +79,55 @@ async def home(request: Request):
 
 @app.get('/doctor')
 def get_doc():
+    # return doctor_list
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from doctor")
+    doctor_list = []
+    for x in mycursor:
+        doctor_list.append(x)
     return doctor_list
+
+
+@app.get('/patient')
+def get_doc():
+    # return patient_list
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from patient")
+    patient_list = []
+    for x in mycursor:
+        patient_list.append(x)
+    return patient_list
+
+
+@app.get('/hospital')
+def get_doc():
+    # return hospital_list
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from hospital")
+    hospital_list = []
+    for x in mycursor:
+        hospital_list.append(x)
+    return hospital_list
+
+
+@app.get('/reports')
+def get_doc():
+    # return reports_list
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from reports")
+    reports_list = []
+    for x in mycursor:
+        reports_list.append(x)
+    return reports_list
 
 
 @app.get('/doctor/{doctor_id}')
 def get_doctor_via_id(doc_id: int):
-    return doctor_list[doc_id-1]
+    return doctor_list[doc_id - 1]
 
 
 @app.post('/doctor')

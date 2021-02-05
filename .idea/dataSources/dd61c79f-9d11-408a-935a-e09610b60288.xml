@@ -653,94 +653,119 @@
       <Engine>MyISAM</Engine>
       <Collation>latin1_swedish_ci</Collation>
     </table>
-    <table id="203" parent="2" name="patient">
+    <table id="203" parent="2" name="hospital"/>
+    <table id="204" parent="2" name="patient">
       <Engine>MyISAM</Engine>
       <Collation>latin1_swedish_ci</Collation>
     </table>
-    <table id="204" parent="2" name="reports">
+    <table id="205" parent="2" name="reports">
       <Engine>MyISAM</Engine>
       <Collation>latin1_swedish_ci</Collation>
     </table>
-    <column id="205" parent="202" name="doc_id">
+    <column id="206" parent="202" name="doc_id">
       <Position>1</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="206" parent="202" name="doc_name">
+    <column id="207" parent="202" name="doc_name">
       <Position>2</Position>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="207" parent="202" name="doc_type">
+    <column id="208" parent="202" name="doc_type">
       <Position>3</Position>
       <DataType>varchar(30)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="208" parent="202" name="doc_ph_no">
+    <column id="209" parent="202" name="doc_ph_no">
       <Position>4</Position>
       <DataType>bigint(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="209" parent="202" name="doc_email">
+    <column id="210" parent="202" name="doc_email">
       <Position>5</Position>
       <DataType>varchar(30)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="210" parent="202" name="PRIMARY">
+    <column id="211" parent="202" name="hospital_id">
+      <Position>6</Position>
+      <DataType>int(11)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="212" parent="202" name="hospital_id">
+      <ColNames>hospital_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="213" parent="202" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>doc_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="211" parent="203" name="p_id">
+    <column id="214" parent="203" name="hospital_id">
+      <Position>1</Position>
+      <DataType>int(11)|0s</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>0</DefaultExpression>
+    </column>
+    <column id="215" parent="203" name="hospital_name">
+      <Position>2</Position>
+      <DataType>varchar(20)|0s</DataType>
+    </column>
+    <key id="216" parent="203" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>hospital_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="217" parent="204" name="p_id">
       <Position>1</Position>
       <DataType>int(10)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="212" parent="203" name="p_name">
+    <column id="218" parent="204" name="p_name">
       <Position>2</Position>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="213" parent="203" name="p_ph_no">
+    <column id="219" parent="204" name="p_ph_no">
       <Position>3</Position>
       <DataType>bigint(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="214" parent="203" name="report_id">
+    <column id="220" parent="204" name="report_id">
       <Position>4</Position>
       <DataType>int(10)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="215" parent="203" name="report_id">
+    <index id="221" parent="204" name="report_id">
       <ColNames>report_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="216" parent="203" name="PRIMARY">
+    <key id="222" parent="204" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>p_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="217" parent="204" name="report_id">
+    <column id="223" parent="205" name="report_id">
       <Position>1</Position>
       <DataType>int(10)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="218" parent="204" name="report_type">
+    <column id="224" parent="205" name="report_type">
       <Position>2</Position>
       <DataType>varchar(30)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="219" parent="204" name="p_id">
+    <column id="225" parent="205" name="p_id">
       <Position>3</Position>
       <DataType>int(10)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="220" parent="204" name="p_id">
+    <index id="226" parent="205" name="p_id">
       <ColNames>p_id</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <key id="221" parent="204" name="p_id">
+    <key id="227" parent="205" name="p_id">
       <ColNames>p_id</ColNames>
       <UnderlyingIndexName>p_id</UnderlyingIndexName>
     </key>
