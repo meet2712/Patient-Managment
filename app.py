@@ -23,8 +23,8 @@ mycursor.execute("select * from doctor")
 
 for db in mycursor:
     print(db)
-
-# mydb.commit()
+mydb.commit()
+mydb.close()
 
 app = FastAPI(template_folder='Templates/')
 templates = Jinja2Templates(directory="Templates/")
@@ -67,16 +67,23 @@ async def home(request: Request):
 
 
 @app.get('/test', response_class=HTMLResponse)
-async def home(request: Request):
+async def test(request: Request):
     return templates.TemplateResponse("test.html", {"request": request})
 
+
 @app.get('/signup', response_class=HTMLResponse)
-async def home(request: Request):
+async def signup(request: Request):
     return templates.TemplateResponse("signup.html", {"request": request})
 
+
 @app.get('/login', response_class=HTMLResponse)
-async def home(request: Request):
+async def login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
+
+
+@app.get('/index2', response_class=HTMLResponse)
+async def index2(request: Request):
+    return templates.TemplateResponse("index2.html", {"request": request})
 
 
 @app.get('/doctor')
