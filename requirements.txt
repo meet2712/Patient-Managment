@@ -11,3 +11,4 @@ pydantic==1.7.3
 starlette==0.14.0
 uvicorn==0.13.3
 Werkzeug==1.0.1
+jwt
