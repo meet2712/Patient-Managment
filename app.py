@@ -181,59 +181,6 @@ async def index2(request: Request):
     return templates.TemplateResponse("index2.html", {"request": request})
 
 
-@app.get('/doctor')
-def get_doc():
-    # return doctor_list
-    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor1 = mydb.cursor()
-    mycursor1.execute("use heroku_cb8e53992ffbeaf")
-    mycursor1.execute("select * from doctor")
-    doctor_list = []
-    for x in mycursor1:
-        doctor_list.append(x)
-    mydb.commit()
-    return doctor_list
-
-
-@app.get('/patient')
-def get_doc():
-    # return patient_list
-    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor2 = mydb.cursor()
-    mycursor2.execute("use heroku_cb8e53992ffbeaf")
-    mycursor2.execute("select * from patient")
-    patient_list = []
-    for x in mycursor2:
-        patient_list.append(x)
-    mydb.commit()
-    return patient_list
-
-
-@app.get('/hospital')
-def get_doc():
-    # return hospital_list
-    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor3 = mydb.cursor()
-    mycursor3.execute("use heroku_cb8e53992ffbeaf")
-    mycursor3.execute("select * from hospital")
-    hospital_list = []
-    for x in mycursor3:
-        hospital_list.append(x)
-    mydb.commit()
-    return hospital_list
-
-
-@app.get('/reports')
-def get_doc():
-    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor4 = mydb.cursor()
-    mycursor4.execute("use heroku_cb8e53992ffbeaf")
-    mycursor4.execute("select * from reports")
-    reports_list = []
-    for x in mycursor4:
-        reports_list.append(x)
-    mydb.commit()
-    return reports_list
 
 
 # @app.get('/doctor/{doctor_id}')
@@ -346,6 +293,62 @@ async def create_user(user: UserIn_Pydantic):
 @app.get('/users/me', response_model=User_Pydantic)
 async def get_user(user: User_Pydantic = Depends(get_current_user)):
     return user
+
+
+@app.get('/patient')
+async def get_doc(user: User_Pydantic = Depends(get_current_user)):
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor2 = mydb.cursor()
+    mycursor2.execute("use heroku_cb8e53992ffbeaf")
+    mycursor2.execute("select * from patient")
+    patient_list = []
+    for x in mycursor2:
+        patient_list.append(x)
+    mydb.commit()
+    return patient_list
+
+
+@app.get('/doctor')
+def get_doc(user: User_Pydantic = Depends(get_current_user)):
+    # return doctor_list
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor1 = mydb.cursor()
+    mycursor1.execute("use heroku_cb8e53992ffbeaf")
+    mycursor1.execute("select * from doctor")
+    doctor_list = []
+    for x in mycursor1:
+        doctor_list.append(x)
+    mydb.commit()
+    return doctor_list
+
+
+@app.get('/hospital')
+def get_doc(user: User_Pydantic = Depends(get_current_user)):
+    # return hospital_list
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor3 = mydb.cursor()
+    mycursor3.execute("use heroku_cb8e53992ffbeaf")
+    mycursor3.execute("select * from hospital")
+    hospital_list = []
+    for x in mycursor3:
+        hospital_list.append(x)
+    mydb.commit()
+    return hospital_list
+
+
+@app.get('/reports')
+def get_doc(user: User_Pydantic = Depends(get_current_user)):
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor4 = mydb.cursor()
+    mycursor4.execute("use heroku_cb8e53992ffbeaf")
+    mycursor4.execute("select * from reports")
+    reports_list = []
+    for x in mycursor4:
+        reports_list.append(x)
+    mydb.commit()
+    return reports_list
+
+
 
 register_tortoise(
     app,
