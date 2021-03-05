@@ -58,7 +58,7 @@ doctor_list = [
         "doc_type": "Physician"
     }
 ]
-# Test Message
+
 
 class Doctor(BaseModel):
     doc_id: int
@@ -75,13 +75,7 @@ async def home(request: Request):
 async def home(request: Request):
     return templates.TemplateResponse("test.html", {"request": request})
 
-@app.get('/signup', response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("signup.html", {"request": request})
 
-@app.get('/login', response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
 
 
 @app.get('/doctor')
