@@ -204,6 +204,24 @@ def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_cur
 
 
 
+@app.get('/appointment')
+def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    #tuple1 = (doctor_id, date)
+    query = """ select appointment_id, schedule_id, cast(date as CHAR) as date, cast(time as CHAR) as time, status from appointment"""
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute(query)
+    schedule_list = mycursor.fetchall()
+    row_headers = [x[0] for x in mycursor.description]
+    mydb.commit()
+    json_data = []
+    for result in schedule_list:
+        json_data.append(dict(zip(row_headers, result)))
+    return json_data
+
+
+
 register_tortoise(
     app,
     db_url='mysql://b4b07506295099:90df5ad7@us-cdbr-east-03.cleardb.com/heroku_cb8e53992ffbeaf',
@@ -211,5 +229,3 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True
 )
-
-#uvicorn.run(app)
