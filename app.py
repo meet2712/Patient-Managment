@@ -4,154 +4,21 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi import FastAPI, Request
+import jwt
+import json
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from passlib.hash import bcrypt
+from tortoise import fields
+from tortoise.contrib.fastapi import register_tortoise
+from tortoise.contrib.pydantic import pydantic_model_creator
+from tortoise.models import Model
 
-# app = FastAPI()
-# #
-# mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-#
-# print(mydb)
-#
-# if mydb:
-#     print("Connection Successful")
-#
-# else:
-#     print("Connection Unsuccessful")
-#
-# mycursor = mydb.cursor()
-# mycursor.execute("use heroku_cb8e53992ffbeaf")
-# mycursor.execute("select * from doctor")
-#
-# for db in mycursor:
-#     print(db)
-# mydb.commit()
-# mydb.close()
 
 app = FastAPI(template_folder='Templates/')
 templates = Jinja2Templates(directory="Templates/")
 app.mount("/static", StaticFiles(directory="./static"), name="static")
 app.mount("/Templates", StaticFiles(directory="./Templates"), name="Templates")
-
-# doctor_list = [
-#     {
-#         "doc_id": 0,
-#         "doc_name": "Meet",
-#         "type": "Dentist"
-#     },
-#     {
-#         "doc_id": 1,
-#         "doc_name": "Hiren",
-#         "doc_type": "Cardiac"
-#     },
-#     {
-#         "doc_id": 2,
-#         "doc_name": "Dixit",
-#         "type": "Surgeon"
-#     },
-#     {
-#         "doc_id": 4,
-#         "doc_name": "Keval",
-#         "doc_type": "Physician"
-#     }
-# ]
-
-
-# class Doctor(BaseModel):
-#     doc_id: int
-#     doc_name: str
-#     doc_type: str
-
-
-#DATABASE_URL = os.environ.get('CLEARDB_DATABASE_URL')
-# DATABASE_URL = 'mysql://b4b07506295099:90df5ad7@us-cdbr-east-03.cleardb.com/heroku_cb8e53992ffbeaf'
-# database = databases.Database(DATABASE_URL,pool_pre_ping=True)
-# metadata = sqlalchemy.MetaData()
-#
-# db = scoped_session(sessionmaker(bind=DATABASE_URL))
-#
-# db.commit()
-#
-#
-#
-# users = sqlalchemy.Table(
-#     "user",
-#     metadata,
-#     sqlalchemy.Column("id",         sqlalchemy.String(100), primary_key=True),
-#     sqlalchemy.Column("username",   sqlalchemy.String(100)),
-#     sqlalchemy.Column("password",   sqlalchemy.String(100)),
-#     sqlalchemy.Column("first_name",  sqlalchemy.String(100)),
-#     sqlalchemy.Column("last_name",  sqlalchemy.String(100)),
-#     sqlalchemy.Column("gender",     sqlalchemy.CHAR),
-#     sqlalchemy.Column("create_at",  sqlalchemy.String(100)),
-#     sqlalchemy.Column("status",  sqlalchemy.String(100)),
-# )
-#
-#
-#
-# engine = sqlalchemy.create_engine(
-#     DATABASE_URL
-# )
-# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-# metadata.create_all(engine)
-# Base = declarative_base()
-#
-#
-# class UserList(BaseModel):
-#     id          : str
-#     username    : str
-#     password    : str
-#     first_name  : str
-#     last_name   : str
-#     gender      : str
-#     create_at   : str
-#     status      : str
-#
-#
-# class UserEntry(BaseModel):
-#     username : str = Field(..., example = "Meet")
-#     password : str = Field(..., example = "Password")
-#     first_name : str = Field(..., example = "First Name")
-#     last_name : str = Field(..., example = "Last Name")
-#     gender : str = Field(..., example = "M/F")
-#
-#
-# @app.on_event("startup")
-# async def startup():
-#     await database.connect()
-#
-#
-# @app.on_event("shutdown")
-# async def shutdown():
-#     await database.disconnect()
-#
-#
-# @app.get("/users", response_model=List[UserList])
-# async def find_all_users():
-#     query = users.select()
-#     return await database.fetch_all(query)
-#
-#
-# @app.post("/users", response_model=UserList)
-# async def register_user(user: UserEntry):
-#     gID = str(uuid.uuid1())
-#     gDate = str(datetime.datetime.now())
-#     query = users.insert().values(
-#         id = gID,
-#         username = user.username,
-#         password = user.password,
-#         first_name = user.first_name,
-#         last_name = user.last_name,
-#         gender = user.gender,
-#         create_at = gDate,
-#         status = "1"
-#
-#     )
-#     await database.execute(query)
-#     return{
-#         "id" : gID,
-#         **user.dict(),
-#         "create_at": gDate,
-#         "status": "1"
-#     }
 
 
 
@@ -220,15 +87,7 @@ async def index2(request: Request):
 # @app.get('/')
 # async def index(token: str = Depends(oauth2_scheme)):
 #     return {'the_token' : token}
-import jwt
 
-from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from passlib.hash import bcrypt
-from tortoise import fields
-from tortoise.contrib.fastapi import register_tortoise
-from tortoise.contrib.pydantic import pydantic_model_creator
-from tortoise.models import Model
 
 # app = FastAPI()
 
@@ -299,55 +158,96 @@ async def get_user(user: User_Pydantic = Depends(get_current_user)):
 @app.get('/patient')
 async def get_doc(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor2 = mydb.cursor()
-    mycursor2.execute("use heroku_cb8e53992ffbeaf")
-    mycursor2.execute("select * from patient")
-    patient_list = []
-    for x in mycursor2:
-        patient_list.append(x)
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from patient")
+    patient_list = mycursor.fetchall()
+    row_headers = [x[0] for x in mycursor.description]
     mydb.commit()
-    return patient_list
+    json_data = []
+    for result in patient_list:
+        json_data.append(dict(zip(row_headers, result)))
+    return json_data
 
 
 @app.get('/doctor')
 def get_doc(user: User_Pydantic = Depends(get_current_user)):
     # return doctor_list
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor1 = mydb.cursor()
-    mycursor1.execute("use heroku_cb8e53992ffbeaf")
-    mycursor1.execute("select * from doctor")
-    doctor_list = []
-    for x in mycursor1:
-        doctor_list.append(x)
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from doctor")
+    doctor_list = mycursor.fetchall()
+    row_headers = [x[0] for x in mycursor.description]
     mydb.commit()
-    return doctor_list
+    json_data = []
+    for result in doctor_list:
+        json_data.append(dict(zip(row_headers, result)))
+    return json_data
 
 
 @app.get('/hospital')
 def get_doc(user: User_Pydantic = Depends(get_current_user)):
-    # return hospital_list
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor3 = mydb.cursor()
-    mycursor3.execute("use heroku_cb8e53992ffbeaf")
-    mycursor3.execute("select * from hospital")
-    hospital_list = []
-    for x in mycursor3:
-        hospital_list.append(x)
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from hospital")
+    hospital_list = mycursor.fetchall()
+    row_headers = [x[0] for x in mycursor.description]
     mydb.commit()
-    return hospital_list
+    json_data = []
+    for result in hospital_list:
+        json_data.append(dict(zip(row_headers, result)))
+    return json_data
 
 
 @app.get('/reports')
 def get_doc(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor4 = mydb.cursor()
-    mycursor4.execute("use heroku_cb8e53992ffbeaf")
-    mycursor4.execute("select * from reports")
-    reports_list = []
-    for x in mycursor4:
-        reports_list.append(x)
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from reports")
+    reports_list = mycursor.fetchall()
+    row_headers = [x[0] for x in mycursor.description]
     mydb.commit()
-    return reports_list
+    json_data = []
+    for result in reports_list:
+        json_data.append(dict(zip(row_headers, result)))
+    return json_data
+
+
+@app.get('/schedule/{doctor_id}')
+def schedule(doctor_id, user: User_Pydantic = Depends(get_current_user)):
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    tuple1 = (doctor_id,)
+    query = """ select * from schedule where doc_id = %s """
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute(query, tuple1)
+    schedule_list = mycursor.fetchall()
+    row_headers = [x[0] for x in mycursor.description]
+    mydb.commit()
+    json_data = []
+    for result in schedule_list:
+        json_data.append(dict(zip(row_headers, result)))
+    return json_data
+
+
+@app.get('/schedule/{doctor_id}/{date}')
+def schedule(doctor_id, date, user: User_Pydantic = Depends(get_current_user)):
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    tuple1 = (doctor_id, date)
+    query = """ select schedule_id, doc_id, cast(date as CHAR) as date1, cast(time as CHAR) as time1, status from schedule where doc_id = %s and date = %s """
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute(query, tuple1)
+    schedule_list = mycursor.fetchall()
+    row_headers = [x[0] for x in mycursor.description]
+    mydb.commit()
+    json_data = []
+    for result in schedule_list:
+        json_data.append(dict(zip(row_headers, result)))
+    return json_data
 
 
 
