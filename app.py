@@ -14,7 +14,7 @@ from tortoise.contrib.fastapi import register_tortoise
 from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise.models import Model
 
-
+#tdycghjkcvhlj
 app = FastAPI(template_folder='Templates/')
 templates = Jinja2Templates(directory="Templates/")
 app.mount("/static", StaticFiles(directory="./static"), name="static")
