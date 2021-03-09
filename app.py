@@ -161,7 +161,7 @@ def get_doc(user: User_Pydantic = Depends(get_current_user)):
             detail='Not an ADMIN USER'
         )
 
-
+##############################
 @app.get('/hospital')
 def get_hospital(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
