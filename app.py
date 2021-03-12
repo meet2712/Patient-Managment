@@ -244,29 +244,33 @@ def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-#appointment logic
-doc_type_value = 'Cardiologist'
-mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+@app.get('/appointment_trial')
+def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
+    #appointment logic
+    doc_type_value = 'Cardiologist'
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
-#for selecting doctor type
-mycursor = mydb.cursor()
-query_for_doc = """ select doc_name from doctor where doc_type = "Cardiologist" """
-mycursor.execute("use heroku_cb8e53992ffbeaf")
-mycursor.execute(query_for_doc,)
-doc_list = mycursor.fetchone()
-print(doc_list)
+    #for selecting doctor type
+    mycursor = mydb.cursor()
+    query_for_doc = """ select doc_name from doctor where doc_type = "Cardiologist" """
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute(query_for_doc,)
+    doc_list = mycursor.fetchone()
+    print(doc_list)
 
 
 
-# date = "2021-03-06"
-# name = "Meet Vaghasia"
-mycursor = mydb.cursor()
-query_for_time = """ select  cast(avail_time as CHAR) as avail_time from schedule where doc_id = (select doc_id from doctor where doc_name = "Meet Vaghasia") AND avail_date = "2021-03-06" AND status = 1 """
-mycursor.execute("use heroku_cb8e53992ffbeaf")
-mycursor.execute(query_for_time,)
-time_list = mycursor.fetchall()
-print(time_list)
-mydb.commit()
+    # date = "2021-03-06"
+    # name = "Meet Vaghasia"
+    mycursor = mydb.cursor()
+    query_for_time = """ select  cast(avail_time as CHAR) as avail_time from schedule where doc_id = (select doc_id from doctor where doc_name = "Meet Vaghasia") AND avail_date = "2021-03-06" AND status = 1 """
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute(query_for_time,)
+    time_list = mycursor.fetchall()
+    mydb.commit()
+    print(time_list)
+    return doc_list, time_list
+
 
 register_tortoise(
     app,
