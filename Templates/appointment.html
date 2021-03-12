@@ -8,12 +8,8 @@
     <div>
         <p>Book Appointment</p>
         <form method="get" id="appointment_form">
-            <label>Date : </label>
-            <input type="date" id="date" name="date">
-            <br>
-            <label>Time : </label>
-            <input type="time" id="time" name="time">
-            <br>
+
+
             <label>Doctor Type : </label>
             <select id="doc_type" name="doc_type">
               <option value="ortho">ortho</option>
@@ -22,6 +18,21 @@
               <option value="Cardiologist">Cardiologist</option>
             </select>
             <br>
+
+            <label>Doctor Name : </label>
+            <select id="doc_name" name="doc_name">
+              <option value="hiren">hiren</option>
+              <option value="dixit">dixit</option>
+              <option value="meet">meet</option>
+              <option value="Cardiologist">Cardiologist</option>
+            </select>
+            <br>
+            <label>Date : </label>
+            <input type="date" id="date" name="date">
+            <br>
+<!--            <label>Time : </label>-->
+<!--            <input type="time" id="time" name="time">-->
+<!--            <br>-->
             <button type="submit" form="appointment_form" value="Submit">Submit</button>
         </form>
     </div>
