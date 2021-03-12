@@ -260,7 +260,7 @@ print(doc_list)
 # date = "2021-03-06"
 # name = "Meet Vaghasia"
 mycursor = mydb.cursor()
-query_for_time = """ select time from schedule where doc_id = (select doc_id from doctor where doc_name = "Meet Vaghasia") AND date = "2021-03-06" """
+query_for_time = """ select time from schedule where doc_id = (select doc_id from doctor where doc_name = "Meet Vaghasia") AND date = "2021-03-06" AND status = '1' """
 mycursor.execute("use heroku_cb8e53992ffbeaf")
 mycursor.execute(query_for_time,)
 time_list = mycursor.fetchall()
