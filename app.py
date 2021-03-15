@@ -86,7 +86,7 @@ async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     result = [token, 'bearer']
     json_data = []
     json_data.append(dict(zip(row_headers, result)))
-    return json_data
+    return {'access_token': token, 'token_type' : 'bearer'}
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:

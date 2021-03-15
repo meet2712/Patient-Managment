@@ -14,6 +14,7 @@
 # print(data.decode("utf-8"))
 
 import requests
+import json
 
 url = "https://patient-managment-api.herokuapp.com/token"
 x = 'meet2712'
@@ -26,6 +27,7 @@ files=[
 headers = {}
 
 response = requests.request("POST", url, headers=headers, data=payload, files=files)
-print(type(response))
-print(response.text)
+json_data = json.loads(response.text)
+print(type(json_data))
+
 
