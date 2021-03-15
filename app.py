@@ -82,8 +82,11 @@ async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user_obj = await User_Pydantic.from_tortoise_orm(user)
 
     token = jwt.encode(user_obj.dict(), JWT_SECRET)
-
-    return {'access_token' : token, 'token_type' : 'bearer'}
+    row_headers = ['access_token', 'token_type']
+    result = [token, 'bearer']
+    json_data = []
+    json_data.append(dict(zip(row_headers, result)))
+    return json_data
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
