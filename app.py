@@ -214,7 +214,7 @@ def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_cur
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
     tuple1 = (doctor_id, date)
-    query = """ select schedule_id, doc_id, cast(avail_date as CHAR) as date, cast(avail_time as CHAR) as time, status from schedule where doc_id = %s and date = %s """
+    query = """ select schedule_id, doc_id, cast(avail_date as CHAR) as date, cast(avail_time as CHAR) as time, status from schedule where doc_id = %s and avail_date = %s """
     mycursor.execute("use heroku_cb8e53992ffbeaf")
     mycursor.execute(query, tuple1)
     schedule_list = mycursor.fetchall()
