@@ -252,18 +252,18 @@ def get_schedule_doc_date(doc_type,name,date,user: User_Pydantic = Depends(get_c
 
     #for selecting doctor type
     mycursor = mydb.cursor()
-    query_for_doc = """ select doc_name from doctor where doc_type = "Cardiologist" """
+    tuple1 = (doc_type,)
+    query_for_doc = """ select doc_name from doctor where doc_type = %s """
     mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute(query_for_doc,)
+    mycursor.execute(query_for_doc,tuple1)
     doc_list = mycursor.fetchone()
     print(doc_list)
 
-    # date = "2021-03-06"
-    # name = "Meet Vaghasia"
+    tuple2 = (name, date)
     mycursor = mydb.cursor()
-    query_for_time = """ select  cast(avail_time as CHAR) as avail_time from schedule where doc_id = (select doc_id from doctor where doc_name = "Meet Vaghasia") AND avail_date = "2021-03-06" AND status = 1 """
+    query_for_time = """ select  cast(avail_time as CHAR) as avail_time from schedule where doc_id = (select doc_id from doctor where doc_name = %s ) AND avail_date = %s AND status = 1 """
     mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute(query_for_time,)
+    mycursor.execute(query_for_time,tuple2)
     time_list = mycursor.fetchall()
     mydb.commit()
     print(time_list)
