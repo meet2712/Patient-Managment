@@ -107,6 +107,7 @@ async def create_user(user: UserIn_Pydantic):
     await user_obj.save()
     return await User_Pydantic.from_tortoise_orm(user_obj)
 
+
 @app.get('/users/me', response_model=User_Pydantic)
 async def get_user(user: User_Pydantic = Depends(get_current_user)):
     return user
@@ -230,7 +231,7 @@ def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_cur
 
 
 
-@app.get('/appointment')
+@app.get('/booked_appointment')
 def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -247,30 +248,80 @@ def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-@app.get('/appointment_trial')
-def get_schedule_doc_date(doc_type,name,date,user: User_Pydantic = Depends(get_current_user)):
+@app.get('/appointment')
+def get_schedule_doc_date(doc_type,doc_name,date1,time1,p_name, User_Pydantic = Depends(get_current_user)):
     #appointment logic
     doc_type_value = 'Cardiologist'
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
-    #for selecting doctor type
-    mycursor = mydb.cursor()
-    tuple1 = (doc_type,)
-    query_for_doc = """ select doc_name from doctor where doc_type = %s """
-    mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute(query_for_doc,tuple1)
-    doc_list = mycursor.fetchone()
-    print(doc_list)
+    # #for selecting doctor type
+    # mycursor = mydb.cursor()
+    # tuple1 = (doc_type,)
+    # query_for_doc = """ select doc_name from doctor where doc_type = %s """
+    # mycursor.execute("use heroku_cb8e53992ffbeaf")
+    # mycursor.execute(query_for_doc,tuple1)
+    # doc_list = mycursor.fetchone()
+    # print(doc_list)
 
-    tuple2 = (name, date)
-    mycursor = mydb.cursor()
-    query_for_time = """ select  cast(avail_time as CHAR) as avail_time from schedule where doc_id = (select doc_id from doctor where doc_name = %s ) AND avail_date = %s AND status = 1 """
-    mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute(query_for_time,tuple2)
-    time_list = mycursor.fetchall()
+    # tuple2 = (doc_name, date)
+    # mycursor = mydb.cursor()
+    # query_for_time = """ select  cast(avail_time as CHAR) as avail_time from schedule where doc_id = (select doc_id from doctor where doc_name = %s ) AND avail_date = %s AND status = 1 """
+    # mycursor.execute("use heroku_cb8e53992ffbeaf")
+    # mycursor.execute(query_for_time,tuple2)
+    # time_list = mycursor.fetchall()
+    # mydb.commit()
+    # print(time_list)
+
+    tuple3 = (p_name,)
+    mycursor1 = mydb.cursor()
+    query_for_pid = """ select p_id from patient where p_name = %s """
+    mycursor1.execute("use heroku_cb8e53992ffbeaf")
+    mycursor1.execute(query_for_pid, tuple3)
+    pid = mycursor1.fetchone()
+    p_id = pid[0]
     mydb.commit()
-    print(time_list)
-    return doc_list, time_list
+
+
+    tuple4 = (doc_name,)
+    mycursor2 = mydb.cursor()
+    query_for_pid = """ select doc_id from doctor where doc_name = %s """
+    mycursor2.execute("use heroku_cb8e53992ffbeaf")
+    mycursor2.execute(query_for_pid, tuple4)
+    docid = mycursor2.fetchone()
+    doc_id = docid[0]
+    mydb.commit()
+
+    tuple5 = (doc_id, date1, time1)
+    mycursor3 = mydb.cursor()
+    query_for_pid = """ select schedule_id from schedule where doc_id = %s and avail_date = %s and avail_time = %s"""
+    mycursor3.execute("use heroku_cb8e53992ffbeaf")
+    mycursor3.execute(query_for_pid, tuple5)
+    scheduleid = mycursor3.fetchall()
+    schedule_id = scheduleid[0]
+    mydb.commit()
+
+
+
+    status = 0
+
+    # print(date1)
+    # print(time1)
+    # print(doc_id)
+    # print(p_id)
+    # print(schedule_id[0])
+    # print(status)
+
+    tuple6 = (date1, time1, doc_id, p_id, schedule_id[0], status)
+    tuple7 = (schedule_id[0],)
+    mycursor = mydb.cursor()
+    query_for_pid = """ insert into appointment (app_date, app_time, doc_id, p_id, schedule_id, status) values ( %s, %s, %s, %s, %s, %s) """
+    query_for_status = """ update schedule set status = 0 where schedule_id = %s """
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute(query_for_pid, tuple6)
+    mycursor.execute(query_for_status, tuple7)
+    mydb.commit()
+
+
 
 
 register_tortoise(
