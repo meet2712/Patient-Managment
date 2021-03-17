@@ -236,7 +236,7 @@ def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
     #tuple1 = (doctor_id, date)
-    query = """ select appointment_id, schedule_id, cast(date as CHAR) as date, cast(time as CHAR) as time, status from appointment"""
+    query = """ select appointment_id, schedule_id, cast(app_date as CHAR) as date, cast(app_time as CHAR) as time, status from appointment"""
     mycursor.execute("use heroku_cb8e53992ffbeaf")
     mycursor.execute(query)
     schedule_list = mycursor.fetchall()
