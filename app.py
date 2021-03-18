@@ -13,6 +13,8 @@ from tortoise import fields
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise.models import Model
+from fastapi import *
+from fastapi.responses import FileResponse
 
 
 app = FastAPI(template_folder='Templates/')
@@ -321,6 +323,55 @@ def get_schedule_doc_date(doc_type,doc_name,date1,time1,p_name, User_Pydantic = 
     mycursor.execute(query_for_status, tuple7)
     mydb.commit()
 
+import tempfile
+
+@app.post('/upload_report')
+def create_report(file: UploadFile = File(...), User_Pydantic = Depends(get_current_user)):
+
+    #file1 = open("trial.txt", "wb")
+    data = file.file.read()
+    print(data)
+    #file1.write(data)
+    # l = data.readline()
+    # while l:
+    #     file1.write(l)
+    #     l = data.readline()
+    # file1.close
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    # with open(data, "rb") as f:
+    #  data1 = data.read().decode()
+    # print(data1)
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    sql = '''Insert into files (id, file_data) values (NULL, %s)'''
+    mycursor.execute(sql, (data, ))
+    mydb.commit()
+    #return FileResponse("./invoice.pdf")
+
+
+@app.get('/get_report')
+def create_report(id, User_Pydantic = Depends(get_current_user)):
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    sql = '''select file_data from files where id = %s'''
+    mycursor.execute(sql,(id, ))
+    l = mycursor.fetchone()
+    # print(l)
+    temp = tempfile.NamedTemporaryFile(suffix='.png', prefix='meet', delete=False)
+    # l = data.readline()
+    while l:
+        temp.write(l[0])
+        l = mycursor.fetchone()
+    #
+    x = tempfile.gettempdir()
+    y = temp.name
+
+    #temp.close()
+    mydb.commit()
+    # file2 = str(file1)
+    # return x
+    return FileResponse(y)
 
 
 
