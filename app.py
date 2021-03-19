@@ -330,7 +330,7 @@ def create_report(file: UploadFile = File(...), User_Pydantic = Depends(get_curr
 
     #file1 = open("trial.txt", "wb")
     data = file.file.read()
-    print(data)
+    #print(data)
     #file1.write(data)
     # l = data.readline()
     # while l:
@@ -349,7 +349,7 @@ def create_report(file: UploadFile = File(...), User_Pydantic = Depends(get_curr
     #return FileResponse("./invoice.pdf")
 
 
-@app.get('/get_report')
+@app.get('/get_report/{id}')
 def create_report(id, User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -358,15 +358,20 @@ def create_report(id, User_Pydantic = Depends(get_current_user)):
     mycursor.execute(sql,(id, ))
     l = mycursor.fetchone()
     # print(l)
-    temp = tempfile.NamedTemporaryFile(suffix='.png', prefix='meet', delete=False)
+    file1 = open("trial.pdf", "wb")
+    temp = tempfile.NamedTemporaryFile(suffix='.pdf', prefix='meet', delete=False)
     # l = data.readline()
     while l:
         temp.write(l[0])
+        file1.write(l[0])
+
         l = mycursor.fetchone()
-    #
+
+
+
     x = tempfile.gettempdir()
     y = temp.name
-
+    file1.close()
     #temp.close()
     mydb.commit()
     # file2 = str(file1)
