@@ -358,8 +358,8 @@ def create_report(id, User_Pydantic = Depends(get_current_user)):
     mycursor.execute(sql,(id, ))
     l = mycursor.fetchone()
     # print(l)
-    file1 = open("trial.pdf", "wb")
-    temp = tempfile.NamedTemporaryFile(suffix='.pdf', prefix='meet', delete=False)
+    #ile1 = open("trial.pdf", "wb")
+    temp = tempfile.NamedTemporaryFile(suffix='.png', prefix='meet', delete=False)
     # l = data.readline()
     while l:
         temp.write(l[0])
@@ -367,14 +367,31 @@ def create_report(id, User_Pydantic = Depends(get_current_user)):
         l = mycursor.fetchone()
 
     x = tempfile.gettempdir()
+    print(x)
     y = temp.name
+    print(y)
     #temp.close()
     mydb.commit()
     # file2 = str(file1)
     # return x
     return FileResponse(y)
 
+import os
 
+@app.get('/cleartemp')
+def create_report(User_Pydantic = Depends(get_current_user)):
+    dir_path = tempfile.gettempdir()
+    print(dir_path)
+
+    try:
+        for root, dirs, files in os.walk(dir_path):
+            for file in files:
+                if file.startswith('meet'):
+                    path = os.path.join(dir_path, file)
+                    print(path)
+                    os.remove(path)
+    except PermissionError:
+        print("File Used by Other Process")
 
 register_tortoise(
     app,
