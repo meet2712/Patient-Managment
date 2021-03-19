@@ -363,15 +363,11 @@ def create_report(id, User_Pydantic = Depends(get_current_user)):
     # l = data.readline()
     while l:
         temp.write(l[0])
-        file1.write(l[0])
 
         l = mycursor.fetchone()
 
-
-
     x = tempfile.gettempdir()
     y = temp.name
-    file1.close()
     #temp.close()
     mydb.commit()
     # file2 = str(file1)
