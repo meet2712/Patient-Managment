@@ -13,6 +13,8 @@ from tortoise import fields
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise.models import Model
+from fastapi import *
+from fastapi.responses import FileResponse
 
 
 app = FastAPI(template_folder='Templates/')
@@ -28,9 +30,9 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-# @app.get('/test', response_class=HTMLResponse)
-# async def test(request: Request):
-#     return templates.TemplateResponse("test.html", {"request": request})
+@app.get('/test', response_class=HTMLResponse)
+async def test(request: Request):
+    return templates.TemplateResponse("appointment.html", {"request": request})
 
 
 @app.get('/signup', response_class=HTMLResponse)
@@ -82,8 +84,11 @@ async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user_obj = await User_Pydantic.from_tortoise_orm(user)
 
     token = jwt.encode(user_obj.dict(), JWT_SECRET)
-
-    return {'access_token' : token, 'token_type' : 'bearer'}
+    row_headers = ['access_token', 'token_type']
+    result = [token, 'bearer']
+    json_data = []
+    json_data.append(dict(zip(row_headers, result)))
+    return {'access_token': token, 'token_type' : 'bearer'}
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
@@ -103,6 +108,7 @@ async def create_user(user: UserIn_Pydantic):
     user_obj = User(name = user.name, username=user.username, password_hash=bcrypt.hash(user.password_hash))
     await user_obj.save()
     return await User_Pydantic.from_tortoise_orm(user_obj)
+
 
 @app.get('/users/me', response_model=User_Pydantic)
 async def get_user(user: User_Pydantic = Depends(get_current_user)):
@@ -214,7 +220,7 @@ def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_cur
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
     tuple1 = (doctor_id, date)
-    query = """ select schedule_id, doc_id, cast(date as CHAR) as date, cast(time as CHAR) as time, status from schedule where doc_id = %s and date = %s """
+    query = """ select schedule_id, doc_id, cast(avail_date as CHAR) as date, cast(avail_time as CHAR) as time, status from schedule where doc_id = %s and avail_date = %s """
     mycursor.execute("use heroku_cb8e53992ffbeaf")
     mycursor.execute(query, tuple1)
     schedule_list = mycursor.fetchall()
@@ -227,12 +233,12 @@ def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_cur
 
 
 
-@app.get('/appointment')
+@app.get('/booked_appointment')
 def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
     #tuple1 = (doctor_id, date)
-    query = """ select appointment_id, schedule_id, cast(date as CHAR) as date, cast(time as CHAR) as time, status from appointment"""
+    query = """ select appointment_id, schedule_id, cast(app_date as CHAR) as date, cast(app_time as CHAR) as time, status from appointment"""
     mycursor.execute("use heroku_cb8e53992ffbeaf")
     mycursor.execute(query)
     schedule_list = mycursor.fetchall()
@@ -244,27 +250,131 @@ def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-#appointment logic
-doc_type_value = 'Cardiologist'
-mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+@app.get('/appointment')
+def get_schedule_doc_date(doc_type,doc_name,date1,time1,p_name, User_Pydantic = Depends(get_current_user)):
+    #appointment logic
+    doc_type_value = 'Cardiologist'
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
-#for selecting doctor type
-mycursor = mydb.cursor()
-query_for_doc = """ select doc_name from doctor where doc_type = "Cardiologist" """
-mycursor.execute("use heroku_cb8e53992ffbeaf")
-mycursor.execute(query_for_doc,doc_type_value)
-doc_list = mycursor.fetchone()
-print(doc_list)
+    # #for selecting doctor type
+    # mycursor = mydb.cursor()
+    # tuple1 = (doc_type,)
+    # query_for_doc = """ select doc_name from doctor where doc_type = %s """
+    # mycursor.execute("use heroku_cb8e53992ffbeaf")
+    # mycursor.execute(query_for_doc,tuple1)
+    # doc_list = mycursor.fetchone()
+    # print(doc_list)
+
+    # tuple2 = (doc_name, date)
+    # mycursor = mydb.cursor()
+    # query_for_time = """ select  cast(avail_time as CHAR) as avail_time from schedule where doc_id = (select doc_id from doctor where doc_name = %s ) AND avail_date = %s AND status = 1 """
+    # mycursor.execute("use heroku_cb8e53992ffbeaf")
+    # mycursor.execute(query_for_time,tuple2)
+    # time_list = mycursor.fetchall()
+    # mydb.commit()
+    # print(time_list)
+
+    tuple3 = (p_name,)
+    mycursor1 = mydb.cursor()
+    query_for_pid = """ select p_id from patient where p_name = %s """
+    mycursor1.execute("use heroku_cb8e53992ffbeaf")
+    mycursor1.execute(query_for_pid, tuple3)
+    pid = mycursor1.fetchone()
+    p_id = pid[0]
+    mydb.commit()
 
 
-# date = "2021-03-06"
-# name = "Meet Vaghasia"
-mycursor = mydb.cursor()
-query_for_time = """ select time from schedule where doc_id = (select doc_id from doctor where doc_name = "Meet Vaghasia") AND date = "2021-03-06" AND status = '1' """
-mycursor.execute("use heroku_cb8e53992ffbeaf")
-mycursor.execute(query_for_time,)
-time_list = mycursor.fetchall()
-print(time_list)
+    tuple4 = (doc_name,)
+    mycursor2 = mydb.cursor()
+    query_for_pid = """ select doc_id from doctor where doc_name = %s """
+    mycursor2.execute("use heroku_cb8e53992ffbeaf")
+    mycursor2.execute(query_for_pid, tuple4)
+    docid = mycursor2.fetchone()
+    doc_id = docid[0]
+    mydb.commit()
+
+    tuple5 = (doc_id, date1, time1)
+    mycursor3 = mydb.cursor()
+    query_for_pid = """ select schedule_id from schedule where doc_id = %s and avail_date = %s and avail_time = %s"""
+    mycursor3.execute("use heroku_cb8e53992ffbeaf")
+    mycursor3.execute(query_for_pid, tuple5)
+    scheduleid = mycursor3.fetchall()
+    schedule_id = scheduleid[0]
+    mydb.commit()
+
+
+
+    status = 0
+
+    # print(date1)
+    # print(time1)
+    # print(doc_id)
+    # print(p_id)
+    # print(schedule_id[0])
+    # print(status)
+
+    tuple6 = (date1, time1, doc_id, p_id, schedule_id[0], status)
+    tuple7 = (schedule_id[0],)
+    mycursor = mydb.cursor()
+    query_for_pid = """ insert into appointment (app_date, app_time, doc_id, p_id, schedule_id, status) values ( %s, %s, %s, %s, %s, %s) """
+    query_for_status = """ update schedule set status = 0 where schedule_id = %s """
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute(query_for_pid, tuple6)
+    mycursor.execute(query_for_status, tuple7)
+    mydb.commit()
+
+import tempfile
+
+@app.post('/upload_report')
+def create_report(file: UploadFile = File(...), User_Pydantic = Depends(get_current_user)):
+
+    #file1 = open("trial.txt", "wb")
+    data = file.file.read()
+    #print(data)
+    #file1.write(data)
+    # l = data.readline()
+    # while l:
+    #     file1.write(l)
+    #     l = data.readline()
+    # file1.close
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    # with open(data, "rb") as f:
+    #  data1 = data.read().decode()
+    # print(data1)
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    sql = '''Insert into files (id, file_data) values (NULL, %s)'''
+    mycursor.execute(sql, (data, ))
+    mydb.commit()
+    #return FileResponse("./invoice.pdf")
+
+
+@app.get('/get_report/{id}')
+def create_report(id, User_Pydantic = Depends(get_current_user)):
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    sql = '''select file_data from files where id = %s'''
+    mycursor.execute(sql,(id, ))
+    l = mycursor.fetchone()
+    # print(l)
+    file1 = open("trial.pdf", "wb")
+    temp = tempfile.NamedTemporaryFile(suffix='.pdf', prefix='meet', delete=False)
+    # l = data.readline()
+    while l:
+        temp.write(l[0])
+
+        l = mycursor.fetchone()
+
+    x = tempfile.gettempdir()
+    y = temp.name
+    #temp.close()
+    mydb.commit()
+    # file2 = str(file1)
+    # return x
+    return FileResponse(y)
+
+
 
 register_tortoise(
     app,
