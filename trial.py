@@ -61,23 +61,38 @@ from tortoise.models import Model
 # # for item in json_data:
 # #     print(item['p_id'])
 
-mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-mycursor = mydb.cursor()
-
-
-doc_type = "Cardiologist"
-doc_name = "Meet Vaghasia"
-date1 = "2021-03-06"
-time1 = "16:00:00"
-p_name = "Meet"
-doc_id = 4
-p_id = 4
-schedule_id = 4
-
-status = 0
-tuple6 = (date1, time1, doc_id, p_id, schedule_id, status)
-mycursor = mydb.cursor()
-query_for_pid = """ insert into appointment (app_date, app_time, doc_id, p_id, schedule_id, status) VALUES ( %s, %s, %s, %s, %s, %s) """
-mycursor.execute("use heroku_cb8e53992ffbeaf")
-mycursor.execute(query_for_pid, tuple6)
-mydb.commit()
+# mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+# mycursor = mydb.cursor()
+#
+#
+#
+# import http.client
+# import mimetypes
+# from codecs import encode
+#
+# conn = http.client.HTTPSConnection("patient-managment-api.herokuapp.com")
+# dataList = []
+# boundary = 'wL36Yn8afVp8Ag7AmP8qZ0SA4n1v9T'
+# dataList.append(encode('--' + boundary))
+# dataList.append(encode('Content-Disposition: form-data; name=file; filename={0}'.format('/E:\College\Sem8\Patient Management\Patient Management\invoice.pdf')))
+#
+# fileType = mimetypes.guess_type('E:\College\Sem8\Patient Management\Patient Management\invoice.pdf')[0] or 'application/octet-stream'
+# dataList.append(encode('Content-Type: {}'.format(fileType)))
+# dataList.append(encode(''))
+#
+# with open('E:\College\Sem8\Patient Management\Patient Management\invoice.pdf', 'rb') as f:
+#   dataList.append(f.read())
+# dataList.append(encode('--'+boundary+'--'))
+# dataList.append(encode(''))
+# body = b'\r\n'.join(dataList)
+# payload = body
+# headers = {
+#   'accept': 'application/json',
+#   'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwibmFtZSI6Im1lZXQiLCJ1c2VybmFtZSI6Im1lZXQyNzEyIiwidXNlcnR5cGUiOiJhZG1pbiIsInBhc3N3b3JkX2hhc2giOiIkMmIkMTIkM0tkeldkcXpFQ3pOVTlGZGZaZXAzdUhyaFdqNS5Td2l2MU1odVFNaUxxUlpMUkdxRVoydUMifQ.OmmTbiqaHTcslkz2ch1RRy9IrVDYfeGWmP1cw8T0tjE',
+#   'Content-Type': 'multipart/form-data',
+#   'Content-type': 'multipart/form-data; boundary={}'.format(boundary)
+# }
+# conn.request("POST", "/upload_report", payload, headers)
+# res = conn.getresponse()
+# data = res.read()
+# print(data.decode("utf-8"))

@@ -358,7 +358,7 @@ def create_report(id, User_Pydantic = Depends(get_current_user)):
     mycursor.execute(sql,(id, ))
     l = mycursor.fetchone()
     # print(l)
-    #ile1 = open("trial.pdf", "wb")
+    #file1 = open("trial.pdf", "wb")
     temp = tempfile.NamedTemporaryFile(suffix='.png', prefix='meet', delete=False)
     # l = data.readline()
     while l:
