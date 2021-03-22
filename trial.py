@@ -96,3 +96,68 @@ from tortoise.models import Model
 # res = conn.getresponse()
 # data = res.read()
 # print(data.decode("utf-8"))
+
+
+# import requests
+# x = "14"
+# url = "https://patient-managment-api.herokuapp.com/get_report/"+ x
+#
+# payload={}
+# headers = {
+#   'accept': 'application/json',
+#   'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwibmFtZSI6Im1lZXQiLCJ1c2VybmFtZSI6Im1lZXQyNzEyIiwidXNlcnR5cGUiOiJhZG1pbiIsInBhc3N3b3JkX2hhc2giOiIkMmIkMTIkM0tkeldkcXpFQ3pOVTlGZGZaZXAzdUhyaFdqNS5Td2l2MU1odVFNaUxxUlpMUkdxRVoydUMifQ.OmmTbiqaHTcslkz2ch1RRy9IrVDYfeGWmP1cw8T0tjE'
+# }
+#
+# response = requests.request("GET", url, headers=headers, data=payload)
+#
+# print(response.text)
+
+# import http.client
+# import mimetypes
+# from codecs import encode
+#
+# conn = http.client.HTTPSConnection("patient-managment-api.herokuapp.com")
+# dataList = []
+# boundary = 'wL36Yn8afVp8Ag7AmP8qZ0SA4n1v9T'
+# dataList.append(encode('--' + boundary))
+# dataList.append(encode('Content-Disposition: form-data; name=file; filename={0}'.format('/E:/College/Sem8/Patient Management/Patient Management/ER-diagram.png')))
+#
+# fileType = mimetypes.guess_type('/E:/College/Sem8/Patient Management/Patient Management/ER-diagram.png')[0] or 'application/octet-stream'
+# dataList.append(encode('Content-Type: {}'.format(fileType)))
+# dataList.append(encode(''))
+#
+# with open('/E:/College/Sem8/Patient Management/Patient Management/ER-diagram.png', 'rb') as f:
+#   dataList.append(f.read())
+# dataList.append(encode('--'+boundary+'--'))
+# dataList.append(encode(''))
+# body = b'\r\n'.join(dataList)
+# payload = body
+# headers = {
+#   'accept': 'application/json',
+#   'Content-Type': 'multipart/form-data',
+#   'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwibmFtZSI6Im1lZXQiLCJ1c2VybmFtZSI6Im1lZXQyNzEyIiwidXNlcnR5cGUiOiJhZG1pbiIsInBhc3N3b3JkX2hhc2giOiIkMmIkMTIkM0tkeldkcXpFQ3pOVTlGZGZaZXAzdUhyaFdqNS5Td2l2MU1odVFNaUxxUlpMUkdxRVoydUMifQ.OmmTbiqaHTcslkz2ch1RRy9IrVDYfeGWmP1cw8T0tjE',
+#   'Content-type': 'multipart/form-data; boundary={}'.format(boundary)
+# }
+# conn.request("POST", "/upload_report", payload, headers)
+# res = conn.getresponse()
+# data = res.read()
+# print(data.decode("utf-8"))
+
+import requests
+
+url = "https://patient-managment-api.herokuapp.com/upload_report"
+
+payload={}
+files=[
+  ('file',('invoice.pdf',open('invoice.pdf','rb'),'application/pdf'))
+]
+headers = {
+  'accept': 'application/json',
+  'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwibmFtZSI6Im1lZXQiLCJ1c2VybmFtZSI6Im1lZXQyNzEyIiwidXNlcnR5cGUiOiJhZG1pbiIsInBhc3N3b3JkX2hhc2giOiIkMmIkMTIkM0tkeldkcXpFQ3pOVTlGZGZaZXAzdUhyaFdqNS5Td2l2MU1odVFNaUxxUlpMUkdxRVoydUMifQ.OmmTbiqaHTcslkz2ch1RRy9IrVDYfeGWmP1cw8T0tjE',
+  'Content-Type': 'multipart/form-data'
+}
+
+response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+print(response.text)
+
