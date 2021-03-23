@@ -17,12 +17,26 @@ from fastapi import *
 from fastapi.responses import FileResponse
 
 
-app = FastAPI(template_folder='Templates/')
+
+tags_metadata = [
+    {
+        "name": "Create Users",
+        "description": "Using this API, a new User would be able to register itself to use the API",
+    },
+    {
+        "name": "Token Generation",
+        "description": "Registered Users can Generate a Token to access the API"
+    }
+]
+
+app = FastAPI(
+    openapi_tags=tags_metadata,
+    title = "Patient Management API",
+    description = "Patient Management API system will provide access to external entities to securely request access to data in the HMS. Building a cloud-based corpus of mock data for a HMS that includes patient records, test results, images etc. Develop a set of APIs to provide access to the data for authenticated users.",
+    template_folder='Templates/')
 templates = Jinja2Templates(directory="Templates/")
 app.mount("/static", StaticFiles(directory="./static"), name="static")
 app.mount("/Templates", StaticFiles(directory="./Templates"), name="Templates")
-
-
 
 
 @app.get('/', response_class=HTMLResponse)
@@ -71,7 +85,7 @@ async def authenticate_user(username: str, password: str):
         return False
     return user
 
-@app.post('/token')
+@app.post('/token', tags=["Token Generation"])
 async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = await authenticate_user(form_data.username, form_data.password)
 
@@ -103,7 +117,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return await User_Pydantic.from_tortoise_orm(user)
 
 
-@app.post('/users', response_model=User_Pydantic)
+@app.post('/users', tags=["Create Users"], response_model=User_Pydantic)
 async def create_user(name,username,password,usertype):
     user_obj = User(name = name, username=username, password_hash=bcrypt.hash(password), usertype= usertype)
     await user_obj.save()
