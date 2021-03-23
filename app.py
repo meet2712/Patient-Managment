@@ -104,8 +104,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 
 @app.post('/users', response_model=User_Pydantic)
-async def create_user(user: UserIn_Pydantic):
-    user_obj = User(name = user.name, username=user.username, password_hash=bcrypt.hash(user.password_hash), usertype= user.usertype)
+async def create_user(name,username,password,usertype):
+    user_obj = User(name = name, username=username, password_hash=bcrypt.hash(password), usertype= usertype)
     await user_obj.save()
     return await User_Pydantic.from_tortoise_orm(user_obj)
 
