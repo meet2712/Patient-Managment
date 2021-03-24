@@ -193,18 +193,32 @@
 #
 # print(response.text)
 
-import requests
+# import requests
+#
+# url = "https://patient-managment-api.herokuapp.com/users?name=trial&username=trial&password=trial&usertype=normal"
+#
+# payload={}
+# headers = {
+#   'accept': 'application/json'
+# }
+#
+# response = requests.request("POST", url, headers=headers, data=payload)
+#
+# print(response.text)
 
-url = "https://patient-managment-api.herokuapp.com/users"
+import http.client
 
-payload="{\n    \"name\": \"trial\",\n    \"username\": \"trial\",\n    \"usertype\": \"trial\",\n    \"password_hash\": \"trial\"\n}"
-
+conn = http.client.HTTPSConnection("patient-managment-api.herokuapp.com")
+payload = ''
 headers = {
-  'accept': 'application/json',
-  'Content-Type': 'application/json',
-  'Authorization': 'bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwibmFtZSI6Im1lZXQiLCJ1c2VybmFtZSI6Im1lZXQyNzEyIiwidXNlcnR5cGUiOiJhZG1pbiIsInBhc3N3b3JkX2hhc2giOiIkMmIkMTIkM0tkeldkcXpFQ3pOVTlGZGZaZXAzdUhyaFdqNS5Td2l2MU1odVFNaUxxUlpMUkdxRVoydUMifQ.OmmTbiqaHTcslkz2ch1RRy9IrVDYfeGWmP1cw8T0tjE'
+  'accept': 'application/json'
 }
-
-response = requests.request("POST", url, headers=headers, data=payload)
-
-print(response.text)
+w = "trial"
+x = "trial"
+y = "trial"
+z = "normal"
+string = "/users?name="+w+"&username="+x+"&password="+y+"&usertype="+z
+conn.request("POST", string, payload, headers)
+res = conn.getresponse()
+data = res.read()
+print(data.decode("utf-8"))

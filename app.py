@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi import FastAPI, Request
 import jwt
+import os
 import json
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -16,21 +17,13 @@ from tortoise.models import Model
 from fastapi import *
 from fastapi.responses import FileResponse
 
+import metadata
 
 
-tags_metadata = [
-    {
-        "name": "Create Users",
-        "description": "Using this API, a new User would be able to register itself to use the API",
-    },
-    {
-        "name": "Token Generation",
-        "description": "Registered Users can Generate a Token to access the API"
-    }
-]
+
 
 app = FastAPI(
-    openapi_tags=tags_metadata,
+    openapi_tags=metadata.tags_metadata,
     title = "Patient Management API",
     description = "Patient Management API system will provide access to external entities to securely request access to data in the HMS. Building a cloud-based corpus of mock data for a HMS that includes patient records, test results, images etc. Develop a set of APIs to provide access to the data for authenticated users.",
     template_folder='Templates/')
@@ -42,21 +35,6 @@ app.mount("/Templates", StaticFiles(directory="./Templates"), name="Templates")
 @app.get('/', response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
-
-@app.get('/test', response_class=HTMLResponse)
-async def test(request: Request):
-    return templates.TemplateResponse("appointment.html", {"request": request})
-
-
-@app.get('/signup', response_class=HTMLResponse)
-async def signup(request: Request):
-    return templates.TemplateResponse("signup.html", {"request": request})
-
-
-@app.get('/login', response_class=HTMLResponse)
-async def login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
 
 
 
@@ -181,7 +159,7 @@ def get_doc(user: User_Pydantic = Depends(get_current_user)):
             detail='Not an ADMIN USER'
         )
 
-##############################
+
 @app.get('/hospital')
 def get_hospital(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
@@ -251,7 +229,7 @@ def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_cur
 def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
-    #tuple1 = (doctor_id, date)
+
     query = """ select appointment_id, schedule_id, cast(app_date as CHAR) as date, cast(app_time as CHAR) as time, status from appointment"""
     mycursor.execute("use heroku_cb8e53992ffbeaf")
     mycursor.execute(query)
@@ -266,27 +244,7 @@ def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
 
 @app.get('/appointment')
 def get_schedule_doc_date(doc_type,doc_name,date1,time1,p_name, User_Pydantic = Depends(get_current_user)):
-    #appointment logic
-    doc_type_value = 'Cardiologist'
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-
-    # #for selecting doctor type
-    # mycursor = mydb.cursor()
-    # tuple1 = (doc_type,)
-    # query_for_doc = """ select doc_name from doctor where doc_type = %s """
-    # mycursor.execute("use heroku_cb8e53992ffbeaf")
-    # mycursor.execute(query_for_doc,tuple1)
-    # doc_list = mycursor.fetchone()
-    # print(doc_list)
-
-    # tuple2 = (doc_name, date)
-    # mycursor = mydb.cursor()
-    # query_for_time = """ select  cast(avail_time as CHAR) as avail_time from schedule where doc_id = (select doc_id from doctor where doc_name = %s ) AND avail_date = %s AND status = 1 """
-    # mycursor.execute("use heroku_cb8e53992ffbeaf")
-    # mycursor.execute(query_for_time,tuple2)
-    # time_list = mycursor.fetchall()
-    # mydb.commit()
-    # print(time_list)
 
     tuple3 = (p_name,)
     mycursor1 = mydb.cursor()
@@ -307,6 +265,7 @@ def get_schedule_doc_date(doc_type,doc_name,date1,time1,p_name, User_Pydantic = 
     doc_id = docid[0]
     mydb.commit()
 
+
     tuple5 = (doc_id, date1, time1)
     mycursor3 = mydb.cursor()
     query_for_pid = """ select schedule_id from schedule where doc_id = %s and avail_date = %s and avail_time = %s"""
@@ -317,16 +276,7 @@ def get_schedule_doc_date(doc_type,doc_name,date1,time1,p_name, User_Pydantic = 
     mydb.commit()
 
 
-
     status = 0
-
-    # print(date1)
-    # print(time1)
-    # print(doc_id)
-    # print(p_id)
-    # print(schedule_id[0])
-    # print(status)
-
     tuple6 = (date1, time1, doc_id, p_id, schedule_id[0], status)
     tuple7 = (schedule_id[0],)
     mycursor = mydb.cursor()
@@ -342,25 +292,13 @@ import tempfile
 @app.post('/upload_report')
 def create_report(file: UploadFile = File(...), User_Pydantic = Depends(get_current_user)):
 
-    #file1 = open("trial.txt", "wb")
     data = file.file.read()
-    #print(data)
-    #file1.write(data)
-    # l = data.readline()
-    # while l:
-    #     file1.write(l)
-    #     l = data.readline()
-    # file1.close
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
-    # with open(data, "rb") as f:
-    #  data1 = data.read().decode()
-    # print(data1)
     mycursor.execute("use heroku_cb8e53992ffbeaf")
     sql = '''Insert into files (id, file_data) values (NULL, %s)'''
     mycursor.execute(sql, (data, ))
     mydb.commit()
-    #return FileResponse("./invoice.pdf")
 
 
 @app.get('/get_report/{id}')
@@ -371,10 +309,8 @@ def create_report(id, User_Pydantic = Depends(get_current_user)):
     sql = '''select file_data from files where id = %s'''
     mycursor.execute(sql,(id, ))
     l = mycursor.fetchone()
-    # print(l)
-    #file1 = open("trial.pdf", "wb")
+
     temp = tempfile.NamedTemporaryFile(suffix='.png', prefix='meet', delete=False)
-    # l = data.readline()
     while l:
         temp.write(l[0])
 
@@ -384,13 +320,10 @@ def create_report(id, User_Pydantic = Depends(get_current_user)):
     print(x)
     y = temp.name
     print(y)
-    #temp.close()
     mydb.commit()
-    # file2 = str(file1)
-    # return x
     return FileResponse(y)
 
-import os
+
 
 @app.get('/cleartemp')
 def create_report(User_Pydantic = Depends(get_current_user)):
