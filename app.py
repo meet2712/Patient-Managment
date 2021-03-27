@@ -44,6 +44,7 @@ class User(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(50)
     username = fields.CharField(50, unique=True)
+    email = fields.CharField(50, unique = True)
     usertype = fields.CharField(50)
     password_hash = fields.CharField(128)
 
@@ -96,8 +97,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 
 @app.post('/users', tags=["Create Users"], response_model=User_Pydantic)
-async def create_user(name,username,password,usertype):
-    user_obj = User(name = name, username=username, password_hash=bcrypt.hash(password), usertype= usertype)
+async def create_user(name,username,email,password):
+    user_obj = User(name = name, username=username,email=email, password_hash=bcrypt.hash(password), usertype="normal")
     await user_obj.save()
     return await User_Pydantic.from_tortoise_orm(user_obj)
 
