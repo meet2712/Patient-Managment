@@ -244,7 +244,7 @@ def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
 
 
 @app.get('/appointment')
-def get_schedule_doc_date(doc_type,doc_name,date1,time1,p_name, User_Pydantic = Depends(get_current_user)):
+def get_schedule_doc_date(doc_name,date1,time1,p_name, User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
     tuple3 = (p_name,)
