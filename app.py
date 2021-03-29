@@ -124,7 +124,7 @@ async def get_user(user: User_Pydantic = Depends(get_current_user)):
 #         )
 #
 
-@app.get('/patient')
+@app.get('/patient', tags=['Patient'])
 async def get_patient(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -139,7 +139,7 @@ async def get_patient(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-@app.get('/doctor')
+@app.get('/doctor', tag=['Doctor'])
 def get_doc(user: User_Pydantic = Depends(get_current_user)):
     if user.usertype == 'doctor':
         # return doctor_list
@@ -161,7 +161,7 @@ def get_doc(user: User_Pydantic = Depends(get_current_user)):
         )
 
 
-@app.get('/hospital')
+@app.get('/hospital',tags=['Hospital'])
 def get_hospital(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -176,19 +176,19 @@ def get_hospital(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-@app.get('/reports')
-def get_report(user: User_Pydantic = Depends(get_current_user)):
-    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor = mydb.cursor()
-    mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute("select * from reports")
-    reports_list = mycursor.fetchall()
-    row_headers = [x[0] for x in mycursor.description]
-    mydb.commit()
-    json_data = []
-    for result in reports_list:
-        json_data.append(dict(zip(row_headers, result)))
-    return json_data
+# @app.get('/reports',tags=[''])
+# def get_report(user: User_Pydantic = Depends(get_current_user)):
+#     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+#     mycursor = mydb.cursor()
+#     mycursor.execute("use heroku_cb8e53992ffbeaf")
+#     mycursor.execute("select * from reports")
+#     reports_list = mycursor.fetchall()
+#     row_headers = [x[0] for x in mycursor.description]
+#     mydb.commit()
+#     json_data = []
+#     for result in reports_list:
+#         json_data.append(dict(zip(row_headers, result)))
+#     return json_data
 
 
 @app.get('/schedule/{doctor_id}')

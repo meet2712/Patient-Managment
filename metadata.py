@@ -7,5 +7,20 @@ tags_metadata = [
     {
         "name": "Token Generation",
         "description": "Registered Users can Generate a Token to access the API"
+    },
+    {
+        "name": "Patient",
+        "description": "List all the Patients"
+    },
+    {
+        "name":"Doctor",
+        "description":"List to all the Doctors"
+    },
+    {
+        "name":"Hospital",
+        "description":"List all the Hospital Chain"
+    },
+    {
+        "name"
     }
 ]
