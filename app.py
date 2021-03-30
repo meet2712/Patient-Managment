@@ -37,6 +37,10 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+# @app.get('/')
+# async def read_root():
+#     return {"message" : "Hello World"}
+
 
 JWT_SECRET = 'myjwtsecret'
 
