@@ -3,11 +3,8 @@ import uvicorn
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi import FastAPI, Request
 import jwt
 import os
-import json
-from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.hash import bcrypt
 from tortoise import fields
@@ -18,7 +15,6 @@ from fastapi import *
 from fastapi.responses import FileResponse
 
 import metadata
-
 
 
 
@@ -37,6 +33,10 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+# @app.get('/')
+# async def read_root():
+#     return {"message" : "Hello World"}
+
 
 JWT_SECRET = 'myjwtsecret'
 
@@ -44,6 +44,7 @@ class User(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(50)
     username = fields.CharField(50, unique=True)
+    email = fields.CharField(50, unique = True)
     usertype = fields.CharField(50)
     password_hash = fields.CharField(128)
 
@@ -96,8 +97,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 
 @app.post('/users', tags=["Create Users"], response_model=User_Pydantic)
-async def create_user(name,username,password,usertype):
-    user_obj = User(name = name, username=username, password_hash=bcrypt.hash(password), usertype= usertype)
+async def create_user(name,username,email,password):
+    user_obj = User(name = name, username=username,email=email, password_hash=bcrypt.hash(password), usertype="normal")
     await user_obj.save()
     return await User_Pydantic.from_tortoise_orm(user_obj)
 
@@ -123,7 +124,7 @@ async def get_user(user: User_Pydantic = Depends(get_current_user)):
 #         )
 #
 
-@app.get('/patient')
+@app.get('/patient', tags=['Patient'])
 async def get_patient(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -138,7 +139,7 @@ async def get_patient(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-@app.get('/doctor')
+@app.get('/doctor', tags=['Doctor'])
 def get_doc(user: User_Pydantic = Depends(get_current_user)):
     if user.usertype == 'doctor':
         # return doctor_list
@@ -160,7 +161,7 @@ def get_doc(user: User_Pydantic = Depends(get_current_user)):
         )
 
 
-@app.get('/hospital')
+@app.get('/hospital',tags=['Hospital'])
 def get_hospital(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -175,27 +176,27 @@ def get_hospital(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-@app.get('/reports')
-def get_report(user: User_Pydantic = Depends(get_current_user)):
-    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-    mycursor = mydb.cursor()
-    mycursor.execute("use heroku_cb8e53992ffbeaf")
-    mycursor.execute("select * from reports")
-    reports_list = mycursor.fetchall()
-    row_headers = [x[0] for x in mycursor.description]
-    mydb.commit()
-    json_data = []
-    for result in reports_list:
-        json_data.append(dict(zip(row_headers, result)))
-    return json_data
+# @app.get('/reports',tags=[''])
+# def get_report(user: User_Pydantic = Depends(get_current_user)):
+#     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+#     mycursor = mydb.cursor()
+#     mycursor.execute("use heroku_cb8e53992ffbeaf")
+#     mycursor.execute("select * from reports")
+#     reports_list = mycursor.fetchall()
+#     row_headers = [x[0] for x in mycursor.description]
+#     mydb.commit()
+#     json_data = []
+#     for result in reports_list:
+#         json_data.append(dict(zip(row_headers, result)))
+#     return json_data
 
 
-@app.get('/schedule/{doctor_id}')
+@app.get('/schedule/{doctor_id}',tags=['Schedule of Specific Doctor'])
 def get_schedule_doc(doctor_id, user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
     tuple1 = (doctor_id,)
-    query = """ select schedule_id, doc_id, cast(date as CHAR) as date, cast(time as CHAR) as time, status from schedule where doc_id = %s """
+    query = """ select schedule_id, doc_id, cast(avail_date as CHAR) as date, cast(avail_time as CHAR) as time, status from schedule where doc_id = %s """
     mycursor.execute("use heroku_cb8e53992ffbeaf")
     mycursor.execute(query, tuple1)
     schedule_list = mycursor.fetchall()
@@ -207,7 +208,7 @@ def get_schedule_doc(doctor_id, user: User_Pydantic = Depends(get_current_user))
     return json_data
 
 
-@app.get('/schedule/{doctor_id}/{date}')
+@app.get('/schedule/{doctor_id}/{date}', tags=['Schedule of Specific Doctor of Specific Date'])
 def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -225,7 +226,7 @@ def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_cur
 
 
 
-@app.get('/booked_appointment')
+@app.get('/booked_appointment',tags=['List of Booked Appointment'])
 def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -242,8 +243,8 @@ def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-@app.get('/appointment')
-def get_schedule_doc_date(doc_type,doc_name,date1,time1,p_name, User_Pydantic = Depends(get_current_user)):
+@app.get('/appointment',tags=['Module to Book Appointment'])
+def get_schedule_doc_date(doc_name,date1,time1,p_name, User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
     tuple3 = (p_name,)
@@ -310,7 +311,7 @@ def create_report(id, User_Pydantic = Depends(get_current_user)):
     mycursor.execute(sql,(id, ))
     l = mycursor.fetchone()
 
-    temp = tempfile.NamedTemporaryFile(suffix='.png', prefix='meet', delete=False)
+    temp = tempfile.NamedTemporaryFile(suffix='.pdf', prefix='meet', delete=False)
     while l:
         temp.write(l[0])
 
