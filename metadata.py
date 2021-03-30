@@ -13,14 +13,27 @@ tags_metadata = [
         "description": "List all the Patients"
     },
     {
-        "name":"Doctor",
-        "description":"List to all the Doctors"
+        "name" : "Doctor",
+        "description" : "List to all the Doctors"
     },
     {
-        "name":"Hospital",
-        "description":"List all the Hospital Chain"
+        "name" : "Hospital",
+        "description" : "List all the Hospital Chain"
     },
     {
-        "name"
+        "name" : "Schedule of Specific Doctor",
+        "description" : "List of Available Schedule of Specific Doctor"
+    },
+    {
+        "name" : "Schedule of Specific Doctor of Specific Date",
+        "description" : "List of Available Schedule of Specific Doctor of Specific Date"
+    },
+    {
+        "name" : "List of Booked Appointment",
+        "description" : "List of All Booked Appointments"
+    },
+    {
+        "name" : "Module to Book Appointment",
+        "description" : "Module to Book Appointment by Providing Doctor's Name, Date - Time and Patients Name"
     }
 ]

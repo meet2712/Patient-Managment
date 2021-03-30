@@ -139,7 +139,7 @@ async def get_patient(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-@app.get('/doctor', tag=['Doctor'])
+@app.get('/doctor', tags=['Doctor'])
 def get_doc(user: User_Pydantic = Depends(get_current_user)):
     if user.usertype == 'doctor':
         # return doctor_list
@@ -191,7 +191,7 @@ def get_hospital(user: User_Pydantic = Depends(get_current_user)):
 #     return json_data
 
 
-@app.get('/schedule/{doctor_id}')
+@app.get('/schedule/{doctor_id}',tags=['Schedule of Specific Doctor'])
 def get_schedule_doc(doctor_id, user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -208,7 +208,7 @@ def get_schedule_doc(doctor_id, user: User_Pydantic = Depends(get_current_user))
     return json_data
 
 
-@app.get('/schedule/{doctor_id}/{date}')
+@app.get('/schedule/{doctor_id}/{date}', tags=['Schedule of Specific Doctor of Specific Date'])
 def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -226,7 +226,7 @@ def get_schedule_doc_date(doctor_id, date, user: User_Pydantic = Depends(get_cur
 
 
 
-@app.get('/booked_appointment')
+@app.get('/booked_appointment',tags=['List of Booked Appointment'])
 def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
@@ -243,7 +243,7 @@ def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
     return json_data
 
 
-@app.get('/appointment')
+@app.get('/appointment',tags=['Module to Book Appointment'])
 def get_schedule_doc_date(doc_name,date1,time1,p_name, User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
 
