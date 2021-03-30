@@ -58,8 +58,6 @@ PyJWT==2.0.1
 PyMySQL==0.9.3
 pyparsing==2.4.7
 PyPika==0.44.1
-PyQt5==5.12
-PyQt5-sip==4.19.19
 pytest==6.2.2
 python-multipart==0.0.5
 pytz==2020.5
