@@ -3,11 +3,8 @@ import uvicorn
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi import FastAPI, Request
 import jwt
 import os
-import json
-from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.hash import bcrypt
 from tortoise import fields
@@ -18,7 +15,6 @@ from fastapi import *
 from fastapi.responses import FileResponse
 
 import metadata
-
 
 
 
