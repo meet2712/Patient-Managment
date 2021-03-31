@@ -31,6 +31,9 @@ from fastapi import FastAPI
 #     #assert response.json() == {"msg": "Hello World"}
 
 
+
+
+
 # def test_read_main():
 #
 #     headers = {
@@ -57,9 +60,10 @@ from fastapi import FastAPI
 #     print(response.status_code)
 #     assert response.status_code == 200
 #     assert response.json() == [{"hospital_id": 4,"hospital_name": "Cims"},{ "hospital_id": 5,"hospital_name": "Zydus"},{"hospital_id": 6,"hospital_name": "Sterling" },{ "hospital_id": 7,"hospital_name": "KD"},{"hospital_id": 8, "hospital_name": "Kiran"},{"hospital_id": 9, "hospital_name": "Masum" },{ "hospital_id": 10, "hospital_name": "Solar"},{"hospital_id": 11,"hospital_name": "Apollo"},{"hospital_id": 12,"hospital_name": "Shalby"},{ "hospital_id": 13,"hospital_name": "Vaghasia Trust"}]
-#
-# # #
-
+def test_doctor_app1():
+    url = "http://localhost:8000/"
+    response = requests.request("GET", url)
+    assert response.status_code == 200
 
 
 
