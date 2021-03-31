@@ -40,9 +40,7 @@ jobs:
         git push heroku HEAD:master -f
     - name: Run Test Server
       run: |
-        uvicorn app:app --reload
-    
-    
+        uvicorn app:app
     - name: Test with pytest
       run: |
         pytest
