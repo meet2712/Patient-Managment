@@ -1,7 +1,6 @@
 from fastapi.testclient import TestClient
 import requests
 from app import app
-import  pytest_python_requests
 import http.client
 
 # app = FastAPI()
