@@ -222,14 +222,3 @@
 # res = conn.getresponse()
 # data = res.read()
 # print(data.decode("utf-8"))
-from fastapi.testclient import TestClient
-import requests
-from app import app
-client = TestClient(app)
-payload='grant_type=&username=meet2712&password=meet.2712&scope=&client_id=&client_secret='
-headers = {
-    'accept': 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded'
-}
-response = client.post("/token", headers=headers,json={"username":"meet2712","password":"meet.2712"})
-print(response.text)

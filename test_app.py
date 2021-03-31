@@ -29,7 +29,7 @@ client = TestClient(app)
 
 
 def test_doctor_app():
-    url = "http://127.0.0.1:8000/hospital"
+    url = "http://localhost:8000/hospital"
     #url = "https://testserver/hospital"
     payload = {}
     headers = {
