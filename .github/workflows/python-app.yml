@@ -38,6 +38,7 @@ jobs:
     - name: Run Test Server
       run: |
         uvicorn app:app
+        
     - name: Test with pytest
       run: |
         pytest
