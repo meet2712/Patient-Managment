@@ -165,7 +165,7 @@ def test_doctor_app():
 ]
 
 
-def test_doctor_app():
+def test_doctor_app1():
     url = "https://patient-managment-api.herokuapp.com/schedule/4"
     #url = "https://testserver/hospital"
     payload = {}
