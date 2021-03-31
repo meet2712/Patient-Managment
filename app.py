@@ -141,24 +141,24 @@ async def get_patient(user: User_Pydantic = Depends(get_current_user)):
 
 @app.get('/doctor', tags=['Doctor'])
 def get_doc(user: User_Pydantic = Depends(get_current_user)):
-    if user.usertype == 'doctor':
+    # if user.usertype == 'doctor':
         # return doctor_list
-        mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-        mycursor = mydb.cursor()
-        mycursor.execute("use heroku_cb8e53992ffbeaf")
-        mycursor.execute("select * from doctor")
-        doctor_list = mycursor.fetchall()
-        row_headers = [x[0] for x in mycursor.description]
-        mydb.commit()
-        json_data = []
-        for result in doctor_list:
-            json_data.append(dict(zip(row_headers, result)))
-        return json_data
-    else :
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Not an ADMIN USER'
-        )
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from doctor")
+    doctor_list = mycursor.fetchall()
+    row_headers = [x[0] for x in mycursor.description]
+    mydb.commit()
+    json_data = []
+    for result in doctor_list:
+        json_data.append(dict(zip(row_headers, result)))
+    return json_data
+    # else :
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail='Not an ADMIN USER'
+    #     )
 
 
 @app.get('/hospital',tags=['Hospital'])
