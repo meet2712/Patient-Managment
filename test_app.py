@@ -26,7 +26,7 @@ from fastapi import FastAPI
 
 #
 # def test_read_main(server):
-#     response = requests.get("http://localhost:8000/")
+#     response = requests.get("/doctor")
 #     assert response.status_code == 200
 #     #assert response.json() == {"msg": "Hello World"}
 
@@ -84,7 +84,7 @@ def test_doctor_app():
     assert response.json() == [
   {
     "doc_id": 4,
-    "doc_name": "Meet Vaghasia",
+    "me": "Meet asia",
     "doc_type": "Cardiologist",
     "doc_ph_no": 9409299016,
     "doc_email": "meet.bda1729@ict.gnu.ac.in",
@@ -165,7 +165,7 @@ def test_doctor_app():
 ]
 
 
-def test_doctor_app():
+def test_doctor_app1():
     url = "https://patient-managment-api.herokuapp.com/schedule/4"
     #url = "https://testserver/hospital"
     payload = {}
