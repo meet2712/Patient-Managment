@@ -1,8 +1,8 @@
+import pytest
 from fastapi.testclient import TestClient
 import requests
 from app import app
-# import uvicorn
-import http.client
+
 
 # app = FastAPI()
 
@@ -13,7 +13,37 @@ import http.client
 
 client = TestClient(app)
 
+from multiprocessing import Process
 
+import pytest
+import requests
+import uvicorn
+from fastapi import FastAPI
+
+
+
+
+@app.get("/")
+async def read_main():
+    return {"msg": "Hello World"}
+
+
+def run_server():
+    uvicorn.run(app)
+
+
+@pytest.fixture
+def server():
+    proc = Process(target=run_server, args=(), daemon=True)
+    proc.start()
+    yield
+    proc.kill() # Cleanup after test
+
+
+def test_read_main(server):
+    response = requests.get("http://localhost:8000/")
+    assert response.status_code == 200
+    #assert response.json() == {"msg": "Hello World"}
 
 
 # def test_read_main():
@@ -43,7 +73,12 @@ def test_doctor_app():
     assert response.status_code == 200
     assert response.json() == [{"hospital_id": 4,"hospital_name": "Cims"},{ "hospital_id": 5,"hospital_name": "Zydus"},{"hospital_id": 6,"hospital_name": "Sterling" },{ "hospital_id": 7,"hospital_name": "KD"},{"hospital_id": 8, "hospital_name": "Kiran"},{"hospital_id": 9, "hospital_name": "Masum" },{ "hospital_id": 10, "hospital_name": "Solar"},{"hospital_id": 11,"hospital_name": "Apollo"},{"hospital_id": 12,"hospital_name": "Shalby"},{ "hospital_id": 13,"hospital_name": "Vaghasia Trust"}]
 
-#
+# #
+
+
+
+
+    # assert response.json() == {"message": "Tomato"}
 # def test_doctor_app():
 #     url = "https://patient-managment-api.herokuapp.com/hospital"
 #     #url = "https://testserver/hospital"
