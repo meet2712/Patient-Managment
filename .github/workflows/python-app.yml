@@ -7,7 +7,7 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -35,9 +35,9 @@ jobs:
       run: |
         git remote add heroku https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git
         git push heroku HEAD:master -f
-    - name: Run Test Server
-      run: |
-        uvicorn app:app
+   - name: Run Test Server
+     run: |
+       uvicorn app:app
         
     - name: Test with pytest
       run: |
