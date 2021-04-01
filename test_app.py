@@ -84,7 +84,7 @@ def test_doctor_app():
     assert response.json() == [
   {
     "doc_id": 4,
-    "me": "Meet asia",
+    "doc_name": "Meet Vaghasia",
     "doc_type": "Cardiologist",
     "doc_ph_no": 9409299016,
     "doc_email": "meet.bda1729@ict.gnu.ac.in",
