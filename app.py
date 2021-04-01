@@ -38,6 +38,7 @@ async def home(request: Request):
 #     return {"message" : "Hello World"}
 
 
+
 JWT_SECRET = 'myjwtsecret'
 
 class User(Model):
