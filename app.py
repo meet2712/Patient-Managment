@@ -297,7 +297,7 @@ def get_schedule_doc_date(doc_name,date1,time1,p_name, User_Pydantic = Depends(g
 
 import tempfile
 
-@app.post('/upload_report',tags  = ['Upload Reoprt'])
+@app.post('/upload_report',tags  = ['Upload Report'])
 def create_report(file: UploadFile = File(...), User_Pydantic = Depends(get_current_user)):
 
     data = file.file.read()
