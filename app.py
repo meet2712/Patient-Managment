@@ -297,7 +297,7 @@ def get_schedule_doc_date(doc_name,date1,time1,p_name, User_Pydantic = Depends(g
 
 import tempfile
 
-@app.post('/upload_report')
+@app.post('/upload_report',tags  = ['Upload Reoprt'])
 def create_report(file: UploadFile = File(...), User_Pydantic = Depends(get_current_user)):
 
     data = file.file.read()
@@ -309,7 +309,7 @@ def create_report(file: UploadFile = File(...), User_Pydantic = Depends(get_curr
     mydb.commit()
 
 
-@app.get('/get_report/{id}')
+@app.get('/get_report/{id}', tags = ['Get Report From report_id'])
 def create_report(id, User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()

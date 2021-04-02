@@ -35,5 +35,13 @@ tags_metadata = [
     {
         "name" : "Module to Book Appointment",
         "description" : "Module to Book Appointment by Providing Doctor's Name, Date - Time and Patients Name"
+    },
+    {
+        "name": "Upload Report",
+        "description": "This module is used to upload the report(PDF format only) and only authorized user can upload their reports"
+    },
+    {
+        "name": "Get Report From report_id",
+        "description": "This module is used to get the Report using report id. Authorized User can access their reports from the Report ID"
     }
 ]
