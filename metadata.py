@@ -47,5 +47,9 @@ tags_metadata = [
     {
         "name": "Create Doctor",
         "description": "Through this module only admin can create the doctor"
+    },
+    {
+        "name": "Create Patient",
+        "description": "Through this module authorized user can add the patient"
     }
 ]

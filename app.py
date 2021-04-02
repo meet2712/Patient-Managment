@@ -106,6 +106,7 @@ async def create_user(name,username,email,password):
 
 @app.get('/users/me', response_model=User_Pydantic)
 async def get_user(user: User_Pydantic = Depends(get_current_user)):
+
     return user
 
 
@@ -201,6 +202,18 @@ def create_doctor(doc_name , doc_type , doc_ph_no, doc_email, hospital_id,user: 
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Not an ADMIN USER'
         )
+
+
+@app.get('/create_patient',tags=['Create Patient'])
+def create_patient(p_ph_no , p_name ,user: User_Pydantic = Depends(get_current_user)):
+    user_id_fk = user.id
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    query = '''INSERT INTO heroku_cb8e53992ffbeaf.patient(p_ph_no , p_name, user_id_fk ) VALUES(%s, %s, %s)'''
+    tuple = (p_ph_no , p_name, user_id_fk)
+    mycursor.execute(query , tuple)
+    mydb.commit()
 
 # @app.get('/reports',tags=[''])
 # def get_report(user: User_Pydantic = Depends(get_current_user)):
