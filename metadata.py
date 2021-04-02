@@ -43,5 +43,9 @@ tags_metadata = [
     {
         "name": "Get Report From report_id",
         "description": "This module is used to get the Report using report id. Authorized User can access their reports from the Report ID"
+    },
+    {
+        "name": "Create Doctor",
+        "description": "Through this module only admin can create the doctor"
     }
 ]

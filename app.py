@@ -183,6 +183,25 @@ def get_hospital(user: User_Pydantic = Depends(get_current_user)):
             detail='Not an ADMIN USER'
         )
 
+
+@app.get('/create_doctor',tags=['Create Doctor'])
+def create_doctor(doc_name , doc_type , doc_ph_no, doc_email, hospital_id,user: User_Pydantic = Depends(get_current_user)):
+    if user.usertype == 'admin':
+
+        mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+        mycursor = mydb.cursor()
+        mycursor.execute("use heroku_cb8e53992ffbeaf")
+
+        query = '''INSERT INTO heroku_cb8e53992ffbeaf.doctor(doc_name, doc_type, doc_ph_no, doc_email, hospital_id) VALUES(%s, %s,%s,%s,%s)'''
+        tuple = (doc_name , doc_type , doc_ph_no, doc_email, hospital_id)
+        mycursor.execute(query , tuple)
+        mydb.commit()
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Not an ADMIN USER'
+        )
+
 # @app.get('/reports',tags=[''])
 # def get_report(user: User_Pydantic = Depends(get_current_user)):
 #     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
