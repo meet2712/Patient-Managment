@@ -165,24 +165,20 @@ def get_doc(user: User_Pydantic = Depends(get_current_user)):
 
 @app.get('/hospital',tags=['Hospital'])
 def get_hospital(user: User_Pydantic = Depends(get_current_user)):
-    if user.usertype == 'doctor':
+    # if user.usertype == 'doctor':
 
-        mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-        mycursor = mydb.cursor()
-        mycursor.execute("use heroku_cb8e53992ffbeaf")
-        mycursor.execute("select * from hospital")
-        hospital_list = mycursor.fetchall()
-        row_headers = [x[0] for x in mycursor.description]
-        mydb.commit()
-        json_data = []
-        for result in hospital_list:
-            json_data.append(dict(zip(row_headers, result)))
-        return json_data
-    else :
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Not an ADMIN USER'
-        )
+    mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
+    mycursor = mydb.cursor()
+    mycursor.execute("use heroku_cb8e53992ffbeaf")
+    mycursor.execute("select * from hospital")
+    hospital_list = mycursor.fetchall()
+    row_headers = [x[0] for x in mycursor.description]
+    mydb.commit()
+    json_data = []
+    for result in hospital_list:
+        json_data.append(dict(zip(row_headers, result)))
+    return json_data
+
 
 
 @app.get('/create_doctor',tags=['Create Doctor'])
@@ -285,7 +281,6 @@ def get_schedule_doc_date(user: User_Pydantic = Depends(get_current_user)):
 @app.get('/appointment',tags=['Module to Book Appointment'])
 def get_schedule_doc_date(doc_name,date1,time1,p_name, User_Pydantic = Depends(get_current_user)):
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
-
     tuple3 = (p_name,)
     mycursor1 = mydb.cursor()
     query_for_pid = """ select p_id from patient where p_name = %s """
@@ -330,14 +325,15 @@ def get_schedule_doc_date(doc_name,date1,time1,p_name, User_Pydantic = Depends(g
 import tempfile
 
 @app.post('/upload_report',tags  = ['Upload Report'])
-def create_report(file: UploadFile = File(...), User_Pydantic = Depends(get_current_user)):
+def create_report(p_id,file: UploadFile = File(...), User_Pydantic = Depends(get_current_user)):
 
     data = file.file.read()
+    tuple = (p_id, data)
     mydb = mysql.connector.connect(host="us-cdbr-east-03.cleardb.com", user="b4b07506295099", passwd="90df5ad7")
     mycursor = mydb.cursor()
     mycursor.execute("use heroku_cb8e53992ffbeaf")
-    sql = '''Insert into files (id, file_data) values (NULL, %s)'''
-    mycursor.execute(sql, (data, ))
+    sql = '''Insert into files (p_id, file_data) values ( %s, %s)'''
+    mycursor.execute(sql, tuple)
     mydb.commit()
 
 
