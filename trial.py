@@ -206,19 +206,19 @@
 #
 # print(response.text)
 
-import http.client
-
-conn = http.client.HTTPSConnection("patient-managment-api.herokuapp.com")
-payload = ''
-headers = {
-  'accept': 'application/json'
-}
-w = "trial"
-x = "trial"
-y = "trial"
-z = "normal"
-string = "/users?name="+w+"&username="+x+"&password="+y+"&usertype="+z
-conn.request("POST", string, payload, headers)
-res = conn.getresponse()
-data = res.read()
-print(data.decode("utf-8"))
+# import http.client
+#
+# conn = http.client.HTTPSConnection("patient-managment-api.herokuapp.com")
+# payload = ''
+# headers = {
+#   'accept': 'application/json'
+# }
+# w = "trial"
+# x = "trial"
+# y = "trial"
+# z = "normal"
+# string = "/users?name="+w+"&username="+x+"&password="+y+"&usertype="+z
+# conn.request("POST", string, payload, headers)
+# res = conn.getresponse()
+# data = res.read()
+# print(data.decode("utf-8"))
