@@ -362,7 +362,7 @@ def create_report(id, User_Pydantic = Depends(get_current_user)):
 
 
 @app.get('/cleartemp')
-def create_report(User_Pydantic = Depends(get_current_user)):
+def clear_temp(User_Pydantic = Depends(get_current_user)):
     dir_path = tempfile.gettempdir()
     print(dir_path)
 
